@@ -1,6 +1,6 @@
 package com.shamardin.advancededitor;
 
-import com.shamardin.advancededitor.view.component.MainPanel;
+import com.shamardin.advancededitor.view.MainPanel;
 import lombok.SneakyThrows;
 import org.junit.Test;
 

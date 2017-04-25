@@ -1,6 +1,8 @@
 package com.shamardin.advancededitor.core.fileloading;
 
+import java.io.File;
+
 public interface FileProcessor {
 
-    byte[] load(String fileName);
+    byte[] load(File file);
 }

@@ -1,7 +1,6 @@
 package com.shamardin.advancededitor.core.fileloading;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,46 +17,40 @@ import java.util.zip.Checksum;
 import static lombok.AccessLevel.PACKAGE;
 
 @Slf4j
-//@Component
+@Component
 public class PersistenceFileProcessor implements FileProcessor {
 
     @VisibleForTesting
-    @Getter(value = PACKAGE)
-    private Map<String, Long> files = new HashMap<>();
+    @Getter(PACKAGE)
+//    private Map<File, Long> files = new HashMap<>();
+
+    private Map<File, byte[]> filesContent = new HashMap<>();
 
     @Override
-    public byte[] load(String fileName) {
-        byte[] content = readFile(fileName);
-        Long fileHash = HashCounter.getFilesHash(content);
-        log.info("files hash is {}", fileHash);
-        files.put(fileName, fileHash);
-        return content;
+    public byte[] load(File file) {
+        byte[] cachedContent = filesContent.computeIfAbsent(file, this::readFile);
+
+//        Long fileHash = HashCounter.getFilesHash(cachedContent);
+//        log.info("files hash is {}", fileHash);
+//        files.put(file, fileHash);
+        return cachedContent;
     }
 
     @VisibleForTesting
-    byte[] readFile(String fileName) {
-        File file = new File(fileName);
+    byte[] readFile(File file) {
         final int length = (int) file.length();
-        final byte[] array = new byte[length];
+        byte[] buffer = new byte[length];
 
         try (final FileInputStream fis = (new FileInputStream(file))) {
-            final int readedData = fis.read(array);
-
-            /*final char[] cbuf = new char[length * 2];
-            int cbufIndex = 0;
-            for (int i = 0; i < read; i++) {
-                int tmp_int = array[i];
-                cbuf[cbufIndex++] = getHex((tmp_int >> 4) & 0xf);
-                cbuf[cbufIndex++] = getHex((tmp_int) & 0xf);
-            }
-            String hexData = new String(cbuf);*/
-            log.info("read {} bytes from file {}", readedData, fileName);
+            final int readedData = fis.read(buffer);
+            log.info("read {} bytes from file {}", readedData, file.getName());
         } catch (FileNotFoundException e) {
+            buffer = "Can not open the file! For details look at log file".getBytes();
             log.error(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        return array;
+        return buffer;
     }
 
     private char getHex(int i) {

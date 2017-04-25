@@ -1,27 +1,27 @@
 package com.shamardin.advancededitor;
 
-import com.shamardin.advancededitor.view.component.MainMenu;
-import com.shamardin.advancededitor.view.component.MainPanel;
+import com.shamardin.advancededitor.view.MainMenu;
+import com.shamardin.advancededitor.view.MainPanel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
+import static lombok.AccessLevel.PACKAGE;
+
 @Slf4j
-//@Component
 public class Editor extends JFrame {
 
-    @Getter
-//    @Autowired
+    @Getter(PACKAGE)
+    @Autowired
     private MainPanel mainPanel;
-//    @Autowired
+
+    @Autowired
     private MainMenu menuBar;
 
-    public Editor() throws HeadlessException {
+    public void start() throws HeadlessException {
         try {
 //            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -33,9 +33,6 @@ public class Editor extends JFrame {
         }
         setLayout(new BorderLayout());
 
-//        mainPanel = new MainPanel();
-//        menuBar = new MainMenu();
-
         setJMenuBar(menuBar);
         add(mainPanel);
 
@@ -45,11 +42,4 @@ public class Editor extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
-
-   /* @PostConstruct
-    public void run(){
-        SwingUtilities.invokeLater(Editor::new);
-    }*/
-
-
 }
