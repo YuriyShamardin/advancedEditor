@@ -1,7 +1,7 @@
 package com.shamardin.advancededitor.controller;
 
+import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.view.FilesListPanel;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +14,14 @@ public class OpenFileControllerImpl implements OpenFileController {
     private FilesListPanel filesListPanel;
 
     @Autowired
-    private ChooseFileControllerImpl chooseFileController;
-
+    private FileProcessor fileProcessor;
 
     @Override
-    @SneakyThrows
     public void showFileInTextArea(File file) {
-        filesListPanel.addFileInList(file);
-        chooseFileController.chooseFile(file);
-
+        if(fileProcessor.isLoaded(file)) {
+            filesListPanel.chooseFileInList(file);
+        } else {
+            filesListPanel.addFileInList(file);
+        }
     }
 }

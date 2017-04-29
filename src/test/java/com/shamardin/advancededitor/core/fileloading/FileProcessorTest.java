@@ -15,6 +15,7 @@ public class FileProcessorTest {
     private PersistenceFileProcessor fileProcessor = new PersistenceFileProcessor();
     private String fileName = "E:\\Projects\\jet\\advancedEditor\\src\\test\\resources\\testContent.txt";
     private File file = new File(fileName);
+    private byte[] content = {49, 50, 51, 13, 10, 52, 53, 54, 13, 10, 55, 56, 57};
 
     @Test
     public void fileShouldBeRed() {
@@ -24,20 +25,19 @@ public class FileProcessorTest {
         byte[] loadedData = fileProcessor.readFile(file);
 
         //then:
-        assertThat(loadedData, is(new byte[]{49, 50, 51, 13, 10, 52, 53, 54, 13, 10, 55, 56, 57}));
+        assertThat(loadedData, is(content));
         log.info(new String(loadedData));
     }
 
     @Test
     public void afterLoadingFileBufferShouldContainRecord() {
         //given:
-        long hash = 234684940;
 
         //when:
         fileProcessor.load(file);
-        Map<File, Long> files = fileProcessor.getFiles();
+        Map<File, byte[]> files = fileProcessor.getFilesContent();
 
         //then:
-        assertThat(files, hasEntry(file, hash));
+        assertThat(files, hasEntry(file, content));
     }
 }

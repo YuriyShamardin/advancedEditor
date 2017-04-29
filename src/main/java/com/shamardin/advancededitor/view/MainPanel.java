@@ -1,6 +1,5 @@
 package com.shamardin.advancededitor.view;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PACKAGE;
 
 @Component
 public class MainPanel extends JPanel {
@@ -31,9 +30,7 @@ public class MainPanel extends JPanel {
 
         Dimension minimumSize = new Dimension(100, 30);
         filesListPanel.setMinimumSize(minimumSize);
-//        filesListPanel.setPreferredSize(minimumSize);
         fileContentArea.setMinimumSize(minimumSize);
-//        fileContentArea.setPreferredSize(minimumSize);
 
         splitPane.setLeftComponent(filesListPanel);
         splitPane.setRightComponent(new JScrollPane(fileContentArea));

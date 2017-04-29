@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 
 import static lombok.AccessLevel.PACKAGE;
@@ -22,15 +23,6 @@ public class Editor extends JFrame {
     private MainMenu menuBar;
 
     public void start() throws HeadlessException {
-        try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        } catch (UnsupportedLookAndFeelException |
-                ClassNotFoundException |
-                InstantiationException |
-                IllegalAccessException e) {
-            log.info(e.getMessage(), e); //OK, using default style
-        }
         setLayout(new BorderLayout());
 
         setJMenuBar(menuBar);
