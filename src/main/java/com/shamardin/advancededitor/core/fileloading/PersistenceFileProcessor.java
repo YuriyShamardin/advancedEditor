@@ -1,16 +1,16 @@
 package com.shamardin.advancededitor.core.fileloading;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
+import static java.lang.Integer.MAX_VALUE;
 import static lombok.AccessLevel.PACKAGE;
 
 @Slf4j
@@ -18,31 +18,38 @@ import static lombok.AccessLevel.PACKAGE;
 public class PersistenceFileProcessor implements FileProcessor {
 
     @VisibleForTesting
-    @Getter(PACKAGE)
-    private Map<File, byte[]> filesContent = new HashMap<>();
+    @Setter(PACKAGE)
+    @Autowired
+    private FileContainer fileContainer;
 
     @Override
-    public byte[] load(File file) {
-        return filesContent.computeIfAbsent(file, this::readFile);
+    public String loadFileInCache(File file) {
+        return fileContainer.get(file);
     }
 
-    @VisibleForTesting
-    byte[] readFile(File file) {
-        final int length = (int) file.length();
-        byte[] buffer = new byte[length];
+    @Override
+    public String readFile(File file) {
+        final long dataLength = file.length();
+        int bufLength = dataLength > MAX_VALUE ? MAX_VALUE : (int) dataLength;
+        byte[] buffer = new byte[bufLength];
+
+        StringBuilder stringBuilder = new StringBuilder();
 
         try (final FileInputStream fis = (new FileInputStream(file))) {
-            final int readData = fis.read(buffer);
-            log.info("read {} bytes from file {}", readData, file.getName());
+            int readData;
+            while ((readData = fis.read(buffer)) > 0) {
+                log.info("read {} bytes from file {}. Full size is {}", readData, file.getName(), dataLength);
+                stringBuilder.append(new String(buffer));
+            }
         } catch (IOException e) {
-            buffer = "Can not open the file! For details look at log file".getBytes();
             log.error(e.getMessage(), e);
+            return "Can not open the file! For details look at log file";
         }
-        return buffer;
+        return stringBuilder.toString();
     }
 
     @Override
     public boolean isLoaded(File file) {
-        return filesContent.containsKey(file);
+        return fileContainer.containsFile(file);
     }
 }

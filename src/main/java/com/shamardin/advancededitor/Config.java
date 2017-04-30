@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.swing.*;
 
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+
 @Configuration
 @ComponentScan
 public class Config {
@@ -17,7 +19,7 @@ public class Config {
 
     @Bean
     public JSplitPane jSplitPane() {
-        return new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        return new JSplitPane(HORIZONTAL_SPLIT);
     }
 
 }

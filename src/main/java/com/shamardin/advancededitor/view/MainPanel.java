@@ -24,6 +24,9 @@ public class MainPanel extends JPanel {
     @Autowired
     private JSplitPane splitPane;
 
+    @Autowired
+    private FileTreePanel fileTreePanel;
+
     @PostConstruct
     public void init() {
         setLayout(new BorderLayout());
@@ -32,7 +35,9 @@ public class MainPanel extends JPanel {
         filesListPanel.setMinimumSize(minimumSize);
         fileContentArea.setMinimumSize(minimumSize);
 
-        splitPane.setLeftComponent(filesListPanel);
+//        splitPane.setLeftComponent(filesListPanel);
+        splitPane.setLeftComponent(fileTreePanel);
+
         splitPane.setRightComponent(new JScrollPane(fileContentArea));
 
         add(splitPane);

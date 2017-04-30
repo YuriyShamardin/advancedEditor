@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -22,36 +21,34 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
 public class OpenFileControllerTest {
     @Autowired
     private Editor editor;
+
     @Before
-    public void startApp(){
+    public void startApp() {
         editor.start();
     }
 
 
+    /* @Test
+     @SneakyThrows
+     public void robotTest() {
+         //given
+         Robot robot = robotWithCurrentAwtHierarchy();
+         ComponentFinder finder = robot.finder();
 
-   /* @Test
-    @SneakyThrows
-    public void robotTest() {
-        //given
-        Robot robot = robotWithCurrentAwtHierarchy();
-        ComponentFinder finder = robot.finder();
-
-        //when
-        Component menu = finder.find(comp -> (comp instanceof JMenu) && ((JMenu) comp).getText().equals("Menu"));
-        robot.click(menu);
-        Component exit = finder.find(comp -> (comp instanceof JMenuItem) && ((JMenuItem) comp).getText().equals("Exit"));
-        robot.click(exit);
-        //then
-    }
-*/
+         //when
+         Component menu = finder.find(comp -> (comp instanceof JMenu) && ((JMenu) comp).getText().equals("Menu"));
+         robot.click(menu);
+         Component exit = finder.find(comp -> (comp instanceof JMenuItem) && ((JMenuItem) comp).getText().equals("Exit"));
+         robot.click(exit);
+         //then
+     }
+ */
     @Test
-    @SneakyThrows
     public void controllerShouldFullTextAreaFromFile() {
         //given
         Robot robot = robotWithCurrentAwtHierarchy();
@@ -66,6 +63,6 @@ public class OpenFileControllerTest {
         FileContentArea textArea = (FileContentArea) finder.find(comp -> (comp instanceof FileContentArea));
 
         //then
-        assertThat(textArea.getText(),is(expectedString));
+        assertThat(textArea.getText(), is(expectedString));
     }
 }

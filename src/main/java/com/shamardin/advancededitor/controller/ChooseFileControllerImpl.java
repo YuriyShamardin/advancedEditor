@@ -4,14 +4,22 @@ import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.view.LoadingFileWaitDialog;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.io.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.TreePath;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.util.List;
+
+import static java.io.File.separator;
 
 @Slf4j
 @Component
@@ -28,18 +36,6 @@ public class ChooseFileControllerImpl implements ChooseFileController {
 
 
     @Override
-    @SneakyThrows
-    public void chooseFile(File file) {
-        if((shower != null) && (!shower.isDone())) {
-            shower.cancel(true);
-        }
-        shower = new TextShower();
-        byte[] content = fileProcessor.load(file);
-        shower.showTextInTextArea(content);
-        waitDialog.showDialogAndBlockTextArea(fileContentArea);
-    }
-
-    @Override
     public void valueChanged(ListSelectionEvent e) {
         if(!e.getValueIsAdjusting()) {
             File file = (File) ((JList) e.getSource()).getSelectedValue();
@@ -48,24 +44,49 @@ public class ChooseFileControllerImpl implements ChooseFileController {
         }
     }
 
-    private class TextShower extends SwingWorker<String, String> {
-        private byte[] content;
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        TreePath path = e.getPath();
+        String fullPath = StringUtils.join(path.getPath(), separator);
 
-        private void showTextInTextArea(byte[] content) {
+        log.info("Selected {}", fullPath);
+        File file = new File(fullPath);
+        if(file.isFile()) {
+            chooseFile(file);
+        }
+    }
+
+
+    @Override
+    public void chooseFile(File file) {
+        if((shower != null) && (!shower.isDone())) {
+            shower.cancel(true);
+        }
+        shower = new TextShower();
+        String content = fileProcessor.loadFileInCache(file);
+
+        shower.showTextInTextArea(content);
+        log.info("start to display");
+
+//        waitDialog.showDialogAndLockTextArea(fileContentArea);
+    }
+
+    private class TextShower extends SwingWorker<String, String> {
+        private String content;
+
+        private void showTextInTextArea(String content) {
             this.content = content;
-            fileContentArea.setText("");
             execute();
         }
 
         @Override
         @SneakyThrows
         protected String doInBackground() {
-
+            fileContentArea.setText("");
             try (BufferedReader stream = new BufferedReader(
-                    new InputStreamReader(new BufferedInputStream((new ByteArrayInputStream(content)))))) {
+                    new InputStreamReader(new ByteArrayInputStream(content.getBytes())))) {
                 String line;
                 while ((line = stream.readLine()) != null) {
-//                    Thread.sleep(2000);
                     if(isCancelled()) {
                         return "";
                     }
@@ -81,13 +102,17 @@ public class ChooseFileControllerImpl implements ChooseFileController {
             for (String line : chunks) {
                 buffer.append(line)
                         .append("\n");
+                if(isCancelled()) {
+                    return;
+                }
             }
             fileContentArea.append(buffer.toString());
         }
 
         @Override
         protected void done() {
-            waitDialog.close();
+            log.info("Done");
+//            waitDialog.close();
         }
     }
 }

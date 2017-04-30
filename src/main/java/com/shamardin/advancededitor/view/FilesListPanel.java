@@ -34,12 +34,11 @@ public class FilesListPanel extends JPanel {
 
     public void addFileInList(File file) {
         listModel.add(listModel.size(), file);
-        view.setSelectedValue(file,true);
-//        view.setSelectedIndex(listModel.size()-1);
+        view.setSelectedValue(file, true);
     }
 
-    public void chooseFileInList(File file){
-        view.setSelectedValue(file,true);
+    public void chooseFileInList(File file) {
+        view.setSelectedValue(file, true);
     }
 
     public void removeFileFromList(String fileName) {
