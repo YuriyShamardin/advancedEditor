@@ -29,8 +29,9 @@ public class Editor extends JFrame {
 
         setTitle("Advanced editor");
         setLocationRelativeTo(null);
-        setSize(500, 500);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        setSize(500, 500);
+        pack();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
 }

@@ -47,7 +47,7 @@ public class LoadingFileWaitDialog {
         show();
     }
 
-    public synchronized  void close() {
+    public synchronized void close() {
         if(textArea != null) {
             textArea.setEditable(true);
         }

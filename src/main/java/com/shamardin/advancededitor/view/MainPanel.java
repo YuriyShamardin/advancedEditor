@@ -6,16 +6,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.*;
 
 import static lombok.AccessLevel.PACKAGE;
 
 @Component
 public class MainPanel extends JPanel {
-
-    @Getter(PACKAGE)
-    @Autowired
-    private FilesListPanel filesListPanel;
 
     @Getter(PACKAGE)
     @Autowired
@@ -27,19 +22,32 @@ public class MainPanel extends JPanel {
     @Autowired
     private FileTreePanel fileTreePanel;
 
+    @Autowired
+    private ButtonsPanel buttonsPanel;
+
+    @Autowired
+    private GitFilesListPanel gitFilesListPanel;
+
+    @Autowired
+    private FileContentTab fileContentTab;
+
     @PostConstruct
     public void init() {
-        setLayout(new BorderLayout());
-
-        Dimension minimumSize = new Dimension(100, 30);
-        filesListPanel.setMinimumSize(minimumSize);
-        fileContentArea.setMinimumSize(minimumSize);
-
-//        splitPane.setLeftComponent(filesListPanel);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        splitPane.setOneTouchExpandable(false);
         splitPane.setLeftComponent(fileTreePanel);
+//        splitPane.setRightComponent(new JScrollPane(fileContentArea));
+        splitPane.setRightComponent(fileContentTab);
 
-        splitPane.setRightComponent(new JScrollPane(fileContentArea));
-
+        splitPane.setAlignmentX(LEFT_ALIGNMENT);
         add(splitPane);
+
+        add(new JSeparator());
+        buttonsPanel.setAlignmentX(LEFT_ALIGNMENT);
+        add(buttonsPanel);
+        add(new JSeparator());
+
+        gitFilesListPanel.setAlignmentX(LEFT_ALIGNMENT);
+        add(gitFilesListPanel);
     }
 }

@@ -1,8 +1,6 @@
 package com.shamardin.advancededitor;
 
-import com.shamardin.advancededitor.core.fileloading.GitProcessor;
-import org.eclipse.jgit.lib.Repository;
-import org.junit.Before;
+import com.shamardin.advancededitor.core.git.GitProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
@@ -23,22 +21,36 @@ public class GitProcessorTest {
     private File dirWithRepo = new File("E:\\Projects\\jet\\advancedEditor\\IntegrationTest\\src\\test\\resources");
     private File dirWithoutRepo = new File("E:\\Projects\\jet\\advancedEditor\\IntegrationTest\\src\\test\\resources\\inner");
 
-
     @Test
     public void repositoryShouldOpenExistRepo() {
         //when
-        Repository repository = processor.openRepository(dirWithRepo);
+        boolean success = processor.openRepository(dirWithRepo);
 
         //then
-        assertThat(repository, is(notNullValue()));
+        assertThat(success, is(true));
     }
 
     @Test
     public void repositoryShouldReturnNullForNonExistRepo() {
         //when
-        Repository repository = processor.openRepository(dirWithoutRepo);
+        boolean success = processor.openRepository(dirWithoutRepo);
         //then
-        assertThat(repository, is(nullValue()));
+        assertThat(success, is(false));
+    }
+
+    @Test
+    public void repositoryShouldAddFileInRepo() {
+        //given
+        boolean success = processor.openRepository(dirWithRepo);
+        File file = new File("inner/2.txt");
+        File file1 = new File("1.txt");
+
+        //when
+        processor.addFile(file);
+        processor.addFile(file1);
+
+        //then
+        assertThat(success, is(true));
     }
 
 

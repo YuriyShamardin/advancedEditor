@@ -2,7 +2,7 @@ package com.shamardin.advancededitor.view;
 
 
 import com.shamardin.advancededitor.controller.OpenFileController;
-import com.shamardin.advancededitor.controller.OpenGitTreeController;
+import com.shamardin.advancededitor.controller.GitController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class MainMenu extends JMenuBar {
     private OpenFileController openFileController;
 
     @Autowired
-    private OpenGitTreeController openGitTreeController;
+    private GitController gitController;
 
     @PostConstruct
     public void init() {
@@ -34,9 +34,8 @@ public class MainMenu extends JMenuBar {
             int ret = fileopen.showDialog(null, "Открыть файл");
             if(ret == APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
-//                openFileController.showFileInTextArea(file);
                 openFileController.showFileTree(file);
-
+                gitController.openRepository(file);
             }
         });
         JMenuItem exit = new JMenuItem("Exit");

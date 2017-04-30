@@ -35,14 +35,14 @@ public class ChooseFileControllerImpl implements ChooseFileController {
     private TextShower shower;
 
 
-    @Override
+   /* @Override
     public void valueChanged(ListSelectionEvent e) {
         if(!e.getValueIsAdjusting()) {
             File file = (File) ((JList) e.getSource()).getSelectedValue();
             log.info("choose file {}", file);
             chooseFile(file);
         }
-    }
+    }*/
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
@@ -66,8 +66,6 @@ public class ChooseFileControllerImpl implements ChooseFileController {
         String content = fileProcessor.loadFileInCache(file);
 
         shower.showTextInTextArea(content);
-        log.info("start to display");
-
 //        waitDialog.showDialogAndLockTextArea(fileContentArea);
     }
 
@@ -111,7 +109,6 @@ public class ChooseFileControllerImpl implements ChooseFileController {
 
         @Override
         protected void done() {
-            log.info("Done");
 //            waitDialog.close();
         }
     }

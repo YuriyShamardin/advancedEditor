@@ -6,11 +6,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import java.io.File;
 
-public interface ChooseFileController extends ListSelectionListener, TreeSelectionListener {
+public interface ChooseFileController extends  TreeSelectionListener {
     void chooseFile(File file);
 
-    @Override
-    void valueChanged(ListSelectionEvent e);
     @Override
     void valueChanged(TreeSelectionEvent e);
 }

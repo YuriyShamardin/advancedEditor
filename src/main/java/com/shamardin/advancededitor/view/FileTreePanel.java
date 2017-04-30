@@ -33,18 +33,12 @@ public class FileTreePanel extends JPanel {
     }
 
     public void showTree(DefaultMutableTreeNode treeNode) {
-
-        // Make a tree list with all the nodes, and make it a JTree
         tree.setModel(new DefaultTreeModel(treeNode));
-
-        // Lastly, put the JTree into a JScrollPane.
-
         scrollpane.getViewport().add(tree);
-
     }
 
     public Dimension getMinimumSize() {
-        return new Dimension(200, 400);
+        return new Dimension(100, 400);
     }
 
     public Dimension getPreferredSize() {

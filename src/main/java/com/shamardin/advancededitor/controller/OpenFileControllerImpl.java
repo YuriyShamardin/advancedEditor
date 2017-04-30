@@ -2,7 +2,6 @@ package com.shamardin.advancededitor.controller;
 
 import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.view.FileTreePanel;
-import com.shamardin.advancededitor.view.FilesListPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +14,8 @@ import static org.apache.commons.lang3.ArrayUtils.nullToEmpty;
 @Component
 public class OpenFileControllerImpl implements OpenFileController {
 
-    @Autowired
-    private FilesListPanel filesListPanel;
+//    @Autowired
+//    private FilesListPanel filesListPanel;
 
     @Autowired
     private FileProcessor fileProcessor;
@@ -24,14 +23,14 @@ public class OpenFileControllerImpl implements OpenFileController {
     @Autowired
     private FileTreePanel fileTreePanel;
 
-    @Override
-    public void showFileInTextArea(File file) {
-        if(fileProcessor.isLoaded(file)) {
-            filesListPanel.chooseFileInList(file);
-        } else {
-            filesListPanel.addFileInList(file);
-        }
-    }
+//    @Override
+//    public void showFileInTextArea(File file) {
+//        if(fileProcessor.isLoaded(file)) {
+//            filesListPanel.chooseFileInList(file);
+//        } else {
+//            filesListPanel.addFileInList(file);
+//        }
+//    }
 
     @Override
     public void showFileTree(File file) {
