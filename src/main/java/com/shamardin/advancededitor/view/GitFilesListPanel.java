@@ -1,7 +1,7 @@
 package com.shamardin.advancededitor.view;
 
 import com.shamardin.advancededitor.controller.MouseController;
-import lombok.Setter;
+import com.shamardin.advancededitor.core.git.FileStatusContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,10 +18,11 @@ public class GitFilesListPanel extends JPanel {
 
     @Autowired
     private MouseController mouseController;
+    @Autowired
+    private FileStatusContainer fileStatusContainer;
 
     private DefaultListModel<File> listModel;
     private JList<File> view;
-    private CellRender cellRenderer;
 
     @PostConstruct
     public void init() {
@@ -32,20 +33,15 @@ public class GitFilesListPanel extends JPanel {
 
         view = new JList<>(listModel);
         view.setSelectionMode(SINGLE_SELECTION);
-        cellRenderer = new CellRender();
+        CellRender cellRenderer = new CellRender();
         view.setCellRenderer(cellRenderer);
         view.setSelectionForeground(Color.RED);
         view.addMouseListener(mouseController);
         add(new JScrollPane(view));
     }
 
-    public void addFileInList(File file, Color color) {
-        cellRenderer.setColor(color);
+    public void addFileInList(File file) {
         listModel.add(listModel.size(), file);
-    }
-
-    public void chooseFileInList(File file) {
-        view.setSelectedValue(file, true);
     }
 
     public File getSelectedFile() {
@@ -64,16 +60,12 @@ public class GitFilesListPanel extends JPanel {
         listModel.removeAllElements();
     }
 
-
     private class CellRender extends DefaultListCellRenderer {
-        @Setter
-        private Color color;
-
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            setBackground(color);
-            return this;
+            Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            component.setBackground(fileStatusContainer.getFileColor((File) value));
+            return component;
         }
     }
 }

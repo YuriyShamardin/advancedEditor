@@ -1,8 +1,10 @@
 package com.shamardin.advancededitor;
 
+import com.shamardin.advancededitor.view.FileContentArea;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 
@@ -15,11 +17,6 @@ public class Config {
     @Bean
     public Editor editor() {
         return new Editor();
-    }
-
-    @Bean
-    public JSplitPane jSplitPane() {
-        return new JSplitPane(HORIZONTAL_SPLIT);
     }
 
 }

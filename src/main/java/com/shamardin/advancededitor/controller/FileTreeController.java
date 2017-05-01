@@ -1,14 +1,17 @@
 package com.shamardin.advancededitor.controller;
 
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import java.io.File;
+import java.util.List;
 
-public interface ChooseFileController extends  TreeSelectionListener {
-    void chooseFile(File file);
+public interface FileTreeController extends TreeSelectionListener {
 
-    @Override
+    void showFileTree(File file);
+
     void valueChanged(TreeSelectionEvent e);
+
+    List<File> getFileList();
+
+    String getRootPath();
 }

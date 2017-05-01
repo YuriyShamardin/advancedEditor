@@ -7,17 +7,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static lombok.AccessLevel.PACKAGE;
 
 @Component
 public class MainPanel extends JPanel {
-
-    @Getter(PACKAGE)
-    @Autowired
-    private FileContentArea fileContentArea;
-
-    @Autowired
-    private JSplitPane splitPane;
 
     @Autowired
     private FileTreePanel fileTreePanel;
@@ -33,10 +27,11 @@ public class MainPanel extends JPanel {
 
     @PostConstruct
     public void init() {
+        JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         splitPane.setOneTouchExpandable(false);
         splitPane.setLeftComponent(fileTreePanel);
-//        splitPane.setRightComponent(new JScrollPane(fileContentArea));
+
         splitPane.setRightComponent(fileContentTab);
 
         splitPane.setAlignmentX(LEFT_ALIGNMENT);

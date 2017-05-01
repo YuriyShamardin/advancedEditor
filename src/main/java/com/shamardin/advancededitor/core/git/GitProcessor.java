@@ -59,20 +59,7 @@ public class GitProcessor implements VcsProcessor {
     }
 
     @Override
-    @SneakyThrows
-    public void updateStatus() {
-        status = git.status().call();
-    }
-
-    @Override
-    @SneakyThrows
-    public Set<String> getUntrackedFiles() {
-        updateStatus();
-        return status.getUntracked();
-    }
-
-    @Override
-    public Set<String> addFile(File file) {
+    public void addFile(File file) {
         try {
             String rightPath = file.getPath().replace("\\", "/");
 
@@ -86,6 +73,37 @@ public class GitProcessor implements VcsProcessor {
         } catch (GitAPIException e) {
             log.info(ExceptionUtils.getMessage(e));
         }
-        return getUntrackedFiles();
+    }
+
+    @Override
+    public synchronized FileStatus computeFileStatus(File file) {
+        String rightPath = file.getPath().replace("\\", "/");
+        Status fileStatus = getFileStatus(rightPath);
+        if(fileStatus.getModified().contains(rightPath)) {
+            return FileStatus.MODIFIED;
+        } else if(fileStatus.getRemoved().contains(rightPath)) {
+            return FileStatus.REMOVED;
+        } else if(fileStatus.getUntracked().contains(rightPath)) {
+            return FileStatus.UNTRACKED;
+        } else if(fileStatus.getAdded().contains(rightPath)) {
+            return FileStatus.VERSIONED;
+        }
+        return FileStatus.UNKNOWN;
+    }
+
+    @SneakyThrows
+    private void updateStatus() {
+        status = git.status().call();
+    }
+
+    @SneakyThrows
+    private Status getFileStatus(String filePath) {
+        return git.status().addPath(filePath).call();
+    }
+
+    @SneakyThrows
+    private Set<String> getUntrackedFiles() {
+        updateStatus();
+        return status.getUntracked();
     }
 }

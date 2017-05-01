@@ -1,7 +1,9 @@
 package com.shamardin.advancededitor.view;
 
-import com.shamardin.advancededitor.controller.ChooseFileController;
+import com.shamardin.advancededitor.controller.FileTreeController;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,39 +11,39 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 
 import static java.awt.BorderLayout.CENTER;
+import static java.io.File.separator;
 
 @Slf4j
 @Component
 public class FileTreePanel extends JPanel {
     @Autowired
-    private ChooseFileController chooseFileController;
-
-    private JTree tree;
+    private FileTreeController fileTreeController;
+    @Getter
+    private JTree fileTree;
     private JScrollPane scrollpane = new JScrollPane();
 
     @PostConstruct
     public void init() {
         setLayout(new BorderLayout());
-        tree = new JTree();
+        fileTree = new JTree();
         add(CENTER, scrollpane);
+        setMinimumSize(new Dimension(100, 400));
+        setPreferredSize(new Dimension(200, 400));
 
         // Add a listener
-        tree.addTreeSelectionListener(chooseFileController);
+        fileTree.addTreeSelectionListener(fileTreeController);
     }
 
     public void showTree(DefaultMutableTreeNode treeNode) {
-        tree.setModel(new DefaultTreeModel(treeNode));
-        scrollpane.getViewport().add(tree);
+        fileTree.setModel(new DefaultTreeModel(treeNode));
+        scrollpane.getViewport().add(fileTree);
     }
-
-    public Dimension getMinimumSize() {
-        return new Dimension(100, 400);
-    }
-
-    public Dimension getPreferredSize() {
-        return new Dimension(200, 400);
+    public String getSelectedFilePath(){
+        TreePath path = fileTree.getSelectionPath();
+        return StringUtils.join(path.getPath(), separator);
     }
 }

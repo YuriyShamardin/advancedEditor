@@ -1,8 +1,8 @@
 package com.shamardin.advancededitor.view;
 
 
-import com.shamardin.advancededitor.controller.OpenFileController;
 import com.shamardin.advancededitor.controller.GitController;
+import com.shamardin.advancededitor.controller.FileTreeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
 @Component
 public class MainMenu extends JMenuBar {
     @Autowired
-    private OpenFileController openFileController;
+    private FileTreeController fileTreeController;
 
     @Autowired
     private GitController gitController;
@@ -34,7 +34,7 @@ public class MainMenu extends JMenuBar {
             int ret = fileopen.showDialog(null, "Открыть файл");
             if(ret == APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
-                openFileController.showFileTree(file);
+                fileTreeController.showFileTree(file);
                 gitController.openRepository(file);
             }
         });

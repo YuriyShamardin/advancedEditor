@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
-public class OpenFileControllerTest {
+public class FileTreeControllerTest {
     @Autowired
     private Editor editor;
 
