@@ -1,7 +1,7 @@
 package com.shamardin.advancededitor.core.git;
 
 import com.shamardin.advancededitor.Config;
-import com.shamardin.advancededitor.core.git.GitProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Status;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +15,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
 public class GitProcessorTest {
@@ -87,4 +88,25 @@ public class GitProcessorTest {
         Set<String> untrackedFolders2 = fileStatus2.getUntrackedFolders();
         assertThat(success, is(true));
     }*/
+
+
+    @Test
+    public void fileShould() {
+        //given
+        boolean success = processor.openRepository(dirWithRepo);
+        String pathCommitedFile = "1.txt";
+//        String pathCommitedFile = "E:\\Projects\\jet\\advancedEditor\\IntegrationTest\\src\\test\\resources\\1.txt";
+//        processor.commitAllChanges("new");
+        Status statusBefore = processor.getFileStatus(pathCommitedFile);
+
+        //when
+        processor.revertFile(new File(pathCommitedFile));
+
+        //then
+
+        Status statusAfter = processor.getFileStatus(pathCommitedFile);
+        log.error("");
+
+
+    }
 }

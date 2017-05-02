@@ -4,10 +4,14 @@ import java.io.File;
 
 public class PathUtil {
 
-    private static String root = "";
+    private volatile static String root = "";
 
-    public static void setRoot(String root) {
+    public synchronized static void setRoot(String root) {
         PathUtil.root = root + "\\";
+    }
+
+    public synchronized static String getRoot() {
+        return root.substring(0, root.length() - 1);
     }
 
     /**

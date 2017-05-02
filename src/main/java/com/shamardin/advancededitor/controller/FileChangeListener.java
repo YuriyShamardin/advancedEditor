@@ -22,10 +22,9 @@ import static com.shamardin.advancededitor.core.git.FileStatus.MODIFIED;
 public class FileChangeListener implements KeyListener {
     @Autowired
     private FileTreePanel fileTreePanel;
+
     @Autowired
     private FileStatusContainer fileStatusContainer;
-    @Autowired
-    private FileTreeController fileTreeController;
 
     @Autowired
     private VCSController vcsController;
@@ -47,6 +46,7 @@ public class FileChangeListener implements KeyListener {
 
                 file = PathUtil.getFileWithRelativePath(fullPath);
                 if(!persistContent.equals(newContent)) {
+                    //already mark as modify
                     if(fileStatusContainer.getFileStatus(file) != MODIFIED) {
                         fileStatusContainer.setFileAsModified(file);
                         publish();

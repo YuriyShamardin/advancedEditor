@@ -80,7 +80,8 @@ public class FileContentControllerImpl implements FileContentController, ActionL
     public void actionPerformed(ActionEvent e) {
         int indexOfTabComponent = fileContentTab.indexOfTabComponent(((java.awt.Component) e.getSource()).getParent());
         String fileNameFromTitle = fileContentTab.getTitleAt(indexOfTabComponent);
-        vcsController.removeFile(fileNameFromTitle);
+        fileProcessor.unTrackFile(new File(fileNameFromTitle));
+
         fileContentTab.remove(indexOfTabComponent);
     }
 

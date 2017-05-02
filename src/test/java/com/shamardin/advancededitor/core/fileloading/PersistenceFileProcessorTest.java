@@ -1,14 +1,13 @@
 package com.shamardin.advancededitor.core.fileloading;
 
+import com.shamardin.advancededitor.controller.VCSController;
+import com.shamardin.advancededitor.core.git.FileStatus;
+import com.shamardin.advancededitor.core.git.GitProcessor;
+import com.shamardin.advancededitor.core.git.VcsProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
 
 @Slf4j
 public class PersistenceFileProcessorTest {
@@ -31,7 +30,6 @@ public class PersistenceFileProcessorTest {
 
 
   /*  @Test
-    // TODO: 30-Apr-17 should replace to integration test
     @Ignore
     public void fileShouldBeReadOneTime() {
         //given:
@@ -47,5 +45,6 @@ public class PersistenceFileProcessorTest {
         //then:
         verify(fileProcessor, times(1)).readFileFromDisk(file);
     }*/
+
 
 }

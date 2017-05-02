@@ -80,7 +80,7 @@ public class FileTreeControllerImpl implements FileTreeController {
         TreePath path = e.getPath();
         String fullPath = StringUtils.join(path.getPath(), separator);
 
-        log.info("Selected {}", fullPath);
+        log.debug("Selected {}", fullPath);
         File file = new File(fullPath);
         if(file.isFile()) {
             fileContentController.showFile(file);
@@ -91,11 +91,10 @@ public class FileTreeControllerImpl implements FileTreeController {
     public void stateChanged(ChangeEvent e) {
         int selectedComponent = fileContentTab.getSelectedIndex();
         String fileNameFromTitle = getFileWithRelativePath(fileContentTab.getTitleAt(selectedComponent)).getPath();
-        log.info(fileNameFromTitle);
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) fileTreePanel.getFileTree().getModel().getRoot();
         String[] split = fileNameFromTitle.split("\\\\");
 
-
+        // TODO: 02-May-17 Bad solution!!!!
         TreePath nextMatch = fileTreePanel.getFileTree().getNextMatch(split[split.length - 1], 0, null);
         fileTreePanel.getFileTree().setSelectionPath(nextMatch);
     }

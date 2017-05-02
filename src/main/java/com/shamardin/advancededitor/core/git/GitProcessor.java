@@ -1,5 +1,6 @@
 package com.shamardin.advancededitor.core.git;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.shamardin.advancededitor.PathUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -8,14 +9,18 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.shamardin.advancededitor.PathUtil.getGitFriendlyPath;
 import static org.apache.commons.lang3.ArrayUtils.INDEX_NOT_FOUND;
 import static org.apache.commons.lang3.ArrayUtils.indexOf;
@@ -28,7 +33,7 @@ public class GitProcessor implements VcsProcessor {
 
     @Override
     @SuppressWarnings("null")
-    public boolean openRepository(File file) {
+    public synchronized boolean openRepository(File file) {
         File[] files = file.listFiles();
         int gitDirectory = indexOf(files, new File(file.getPath() + File.separator + ".git"));
         if(gitDirectory == INDEX_NOT_FOUND) {
@@ -49,7 +54,7 @@ public class GitProcessor implements VcsProcessor {
     }
 
     @Override
-    public boolean createRepository(File file) {
+    public synchronized boolean createRepository(File file) {
         try (Git git = Git.init().setDirectory(file).call()) {
             this.git = git;
             PathUtil.setRoot(file.getPath());
@@ -61,7 +66,7 @@ public class GitProcessor implements VcsProcessor {
     }
 
     @Override
-    public void addFile(File file) {
+    public synchronized void addFile(File file) {
         try {
             String rightPath = getGitFriendlyPath(file.getPath());
 
@@ -73,12 +78,65 @@ public class GitProcessor implements VcsProcessor {
                 log.info("Can not add file {} to git", file);
             }
         } catch (GitAPIException e) {
-            log.info(ExceptionUtils.getMessage(e));
+            log.error(ExceptionUtils.getMessage(e));
         }
     }
 
     @Override
-    public synchronized FileStatus computeFileStatus(File file) {
+    public synchronized void removeFile(File file) {
+        try {
+            String rightPath = getGitFriendlyPath(file.getPath());
+            git.rm().addFilepattern(rightPath).call();
+
+            Status call = git.status().call();
+            if(call.getRemoved().contains(rightPath)) {
+                log.info("success remove file {} from git", file);
+            } else {
+                log.info("Can not remove file {} from git", file);
+            }
+        } catch (GitAPIException e) {
+            log.error(ExceptionUtils.getMessage(e));
+        }
+    }
+
+    @Override
+    public synchronized void revertFile(File file) {
+        Ref call;
+        try {
+            String rightPath = getGitFriendlyPath(file.getPath());
+            call = git.checkout().setStartPoint("HEAD").addPath(rightPath).call();
+        } catch (GitAPIException e) {
+            log.error(ExceptionUtils.getMessage(e));
+        }
+    }
+
+    @Override
+    public synchronized List<String> getAllRemovedFiles() {
+        Status status;
+        try {
+            status = git.status().call();
+            return newArrayList(status.getRemoved());
+        } catch (GitAPIException e) {
+            log.error(ExceptionUtils.getMessage(e));
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public synchronized List<String> getAllUntrackedFiles() {
+        Status status;
+        try {
+            status = git.status().call();
+            return newArrayList(status.getUntracked());
+        } catch (GitAPIException e) {
+            log.error(ExceptionUtils.getMessage(e));
+        }
+        return new ArrayList<>();
+    }
+
+
+    @Override
+    public FileStatus computeFileStatus(File file) {
         String rightPath = file.getPath().replace("\\", "/");
         Status fileStatus = getFileStatus(rightPath);
         if(fileStatus.getModified().contains(rightPath)) {
@@ -88,24 +146,36 @@ public class GitProcessor implements VcsProcessor {
         } else if(fileStatus.getUntracked().contains(rightPath)) {
             return FileStatus.UNTRACKED;
         } else if(fileStatus.getAdded().contains(rightPath)) {
+            return FileStatus.ADDED;
+        } else if(fileStatus.getChanged().contains(rightPath)) {
+            return FileStatus.GET_CHANGES;
+        } else if(fileStatus.getMissing().contains(rightPath)) {
+            return FileStatus.MISSING;
+        } else if(fileStatus.isClean()) {
             return FileStatus.VERSIONED;
         }
         return FileStatus.UNKNOWN;
     }
 
     @SneakyThrows
-    private void updateStatus() {
+    private synchronized void updateStatus() {
         status = git.status().call();
     }
 
     @SneakyThrows
-    private Status getFileStatus(String filePath) {
+    @VisibleForTesting
+    synchronized Status getFileStatus(String filePath) {
         return git.status().addPath(filePath).call();
     }
 
     @SneakyThrows
-    private Set<String> getUntrackedFiles() {
+    private synchronized Set<String> getUntrackedFiles() {
         updateStatus();
         return status.getUntracked();
+    }
+
+    @SneakyThrows
+    synchronized void commitAllChanges(String message) {
+        git.commit().setMessage(message).call();
     }
 }

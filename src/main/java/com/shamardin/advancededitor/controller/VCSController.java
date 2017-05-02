@@ -7,9 +7,17 @@ public interface VCSController {
 
     void addFileToVcs(File file);
 
+    /**
+     * Update status of files from VCS and refresh panel
+     */
     void updateGitPanel();
 
+    /**
+     * Refresh panel without refreshing status of files from VCS
+     */
     void refreshGitPanel();
 
-    void removeFile(String fileName);
+    void removeFromVcs(File file);
+
+    void revert(File file);
 }

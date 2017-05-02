@@ -9,7 +9,7 @@ import static java.awt.Color.*;
 
 @AllArgsConstructor
 public enum FileStatus {
-    UNTRACKED(PINK), MODIFIED(CYAN), REMOVED(GRAY), VERSIONED(GREEN), UNKNOWN(YELLOW);
+    UNTRACKED(PINK), MODIFIED(CYAN), REMOVED(GRAY), VERSIONED(WHITE), UNKNOWN(YELLOW), GET_CHANGES(BLUE), MISSING(LIGHT_GRAY), ADDED(GREEN);
 
     @Getter
     private final Color color;

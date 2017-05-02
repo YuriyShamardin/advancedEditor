@@ -41,7 +41,9 @@ public class GitFilesListPanel extends JPanel {
     }
 
     public void addFileInList(File file) {
-        listModel.add(listModel.size(), file);
+        if(!listModel.contains(file)) {
+            listModel.add(listModel.size(), file);
+        }
     }
 
     public File getSelectedFile() {

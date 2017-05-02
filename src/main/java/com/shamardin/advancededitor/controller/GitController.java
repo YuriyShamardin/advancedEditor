@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
+import static com.shamardin.advancededitor.PathUtil.getRoot;
 
 @Slf4j
 @Component
@@ -37,8 +38,6 @@ public class GitController implements VCSController {
     @Autowired
     private FileProcessor fileProcessor;
 
-    private String rootPath;
-
     @Override
     public void openRepository(File file) {
         boolean isOpened = vcsProcessor.openRepository(file);
@@ -49,7 +48,6 @@ public class GitController implements VCSController {
                 fileTreeController.showFileTree(file);
             }
         }
-        this.rootPath = file.getPath() + "\\";
         updateGitPanel();
     }
 
@@ -70,6 +68,10 @@ public class GitController implements VCSController {
                 for (File file : fileList) {
                     fileStatusContainer.updateFileStatus(getFileWithRelativePath(file));
                     publish(file);
+                }
+                List<String> removedFiles = vcsProcessor.getAllRemovedFiles();
+                for (String string : removedFiles) {
+                    publish(new File(string));
                 }
                 return null;
             }
@@ -100,6 +102,11 @@ public class GitController implements VCSController {
                     fileStatusContainer.getFileStatus(getFileWithRelativePath(file));
                     publish(file);
                 }
+
+                List<String> removedFiles = vcsProcessor.getAllRemovedFiles();
+                for (String string : removedFiles) {
+                    publish(new File(string));
+                }
                 return null;
             }
 
@@ -118,10 +125,16 @@ public class GitController implements VCSController {
     }
 
     @Override
-    public void removeFile(String fileName) {
-        String fullPath = fileTreePanel.getSelectedFilePath();
-        fileProcessor.unTrackFile(new File(fileName));
+    public void removeFromVcs(File file) {
+        vcsProcessor.removeFile(file);
+        fileTreeController.showFileTree(new File(getRoot()));
         updateGitPanel();
     }
 
+    @Override
+    public void revert(File file) {
+        vcsProcessor.revertFile(file);
+        fileTreeController.showFileTree(new File(getRoot()));
+        updateGitPanel();
+    }
 }

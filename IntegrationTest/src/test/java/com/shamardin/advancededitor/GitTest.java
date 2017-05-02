@@ -1,5 +1,8 @@
 package com.shamardin.advancededitor;
 
+import com.shamardin.advancededitor.core.git.FileStatus;
+import com.shamardin.advancededitor.core.git.GitProcessor;
+import com.shamardin.advancededitor.core.git.VcsProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
@@ -37,4 +40,7 @@ public class GitTest {
             e1.printStackTrace();
         }
     }
+
+
+
 }

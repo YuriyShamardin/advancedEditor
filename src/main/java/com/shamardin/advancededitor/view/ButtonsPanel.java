@@ -26,20 +26,27 @@ public class ButtonsPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         add(new JLabel("Buttons"));
-        JButton addToGit = new JButton("AddToGit");
+
+        JButton addToGit = new JButton("Add to git");
         addToGit.addActionListener(e -> {
             gitController.addFileToVcs(gitFilesListPanel.getSelectedFile());
         });
         add(addToGit);
 
-       /* JButton updateStatus = new JButton("Update");
-        updateStatus.addActionListener(e -> fileStatusContainer.updateAllFileStatuses());
+        JButton removeFromGit = new JButton("Remove");
+        removeFromGit.addActionListener(e -> {
+            gitController.removeFromVcs(gitFilesListPanel.getSelectedFile());
+        });
+        add(removeFromGit);
 
-        add(updateStatus);*/
+        JButton revert = new JButton("Revert");
+        revert.addActionListener(e -> {
+            gitController.revert(gitFilesListPanel.getSelectedFile());
+        });
+        add(revert);
 
         JButton refreshGitTree = new JButton("Refresh");
         refreshGitTree.addActionListener(e -> gitController.updateGitPanel());
         add(refreshGitTree);
     }
-
 }
