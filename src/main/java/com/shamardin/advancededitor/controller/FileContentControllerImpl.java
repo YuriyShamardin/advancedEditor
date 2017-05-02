@@ -4,13 +4,14 @@ import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.view.ButtonTabComponent;
 import com.shamardin.advancededitor.view.FileContentArea;
 import com.shamardin.advancededitor.view.FileContentTab;
-import com.shamardin.advancededitor.view.LoadingFileWaitDialog;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,8 +20,9 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FileContentControllerImpl implements FileContentController {
-    public static final int TAB_NOT_FOUND = -1;
+public class FileContentControllerImpl implements FileContentController, ActionListener {
+    private static final int TAB_NOT_FOUND = -1;
+
     @Autowired
     private FileProcessor fileProcessor;
 
@@ -28,13 +30,10 @@ public class FileContentControllerImpl implements FileContentController {
     private FileContentTab fileContentTab;
 
     @Autowired
-    private LoadingFileWaitDialog waitDialog;
+    private FileChangeListener fileChangeListener;
 
     @Autowired
-    private FileChangeController fileChangeController;
-
-    @Autowired
-    VCSController vcsController;
+    private VCSController vcsController;
 
     private volatile TextShower shower;
 
@@ -43,9 +42,10 @@ public class FileContentControllerImpl implements FileContentController {
         if((shower != null) && (!shower.isDone())) {
             shower.cancel(true);
         }
-        String content = fileProcessor.loadFileInContainer(file);
 
-        int indexOfTab = fileContentTab.indexOfTab(file.getName());
+        String content = fileProcessor.getFileContent(file);
+
+        int indexOfTab = fileContentTab.indexOfTab(file.getPath());
         if(indexOfTab == TAB_NOT_FOUND) {
             indexOfTab = createNewTab(file);
         }
@@ -56,19 +56,32 @@ public class FileContentControllerImpl implements FileContentController {
 
         shower = new TextShower();
         shower.showTextInTextArea(content, fileContentArea);
+
     }
 
     private int createNewTab(File file) {
         int indexOfTab;
 
         FileContentArea fileContentArea = new FileContentArea();
-        fileContentArea.addKeyListener(fileChangeController);
+        fileContentArea.addKeyListener(fileChangeListener);
 
-        fileContentTab.addTab(file.getName(), new JScrollPane(fileContentArea));
+        String fileName = file.getName();
+        fileContentTab.addTab(file.getPath(), new JScrollPane(fileContentArea));
+
         fileContentTab.setTabComponentAt(fileContentTab.getTabCount() - 1,
-                new ButtonTabComponent(fileContentTab, vcsController));
-        indexOfTab = fileContentTab.indexOfTab(file.getName());
+                new ButtonTabComponent(fileName, this));
+
+        indexOfTab = fileContentTab.indexOfTab(file.getPath());
         return indexOfTab;
+    }
+
+    // Close tab was invoked
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        int indexOfTabComponent = fileContentTab.indexOfTabComponent(((java.awt.Component) e.getSource()).getParent());
+        String fileNameFromTitle = fileContentTab.getTitleAt(indexOfTabComponent);
+        vcsController.removeFile(fileNameFromTitle);
+        fileContentTab.remove(indexOfTabComponent);
     }
 
     //Show big text fast
@@ -114,8 +127,7 @@ public class FileContentControllerImpl implements FileContentController {
 
         @Override
         protected void done() {
-//            waitDialog.close();
+            vcsController.updateGitPanel();
         }
-
     }
 }

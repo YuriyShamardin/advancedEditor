@@ -1,5 +1,6 @@
 package com.shamardin.advancededitor.core.git;
 
+import com.shamardin.advancededitor.PathUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -15,15 +16,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import static com.shamardin.advancededitor.PathUtil.getGitFriendlyPath;
 import static org.apache.commons.lang3.ArrayUtils.INDEX_NOT_FOUND;
 import static org.apache.commons.lang3.ArrayUtils.indexOf;
 
 @Slf4j
 @Component
 public class GitProcessor implements VcsProcessor {
-
     private Git git;
-
     private Status status;
 
     @Override
@@ -40,6 +40,7 @@ public class GitProcessor implements VcsProcessor {
                 .build()) {
             log.info("found repository with status {}", repository.getRepositoryState());
             git = Git.wrap(repository);
+            PathUtil.setRoot(file.getPath());
             return true;
         } catch (IOException e) {
             log.error("{}", e);
@@ -51,6 +52,7 @@ public class GitProcessor implements VcsProcessor {
     public boolean createRepository(File file) {
         try (Git git = Git.init().setDirectory(file).call()) {
             this.git = git;
+            PathUtil.setRoot(file.getPath());
             return true;
         } catch (GitAPIException e) {
             log.error("Unknown error during creation repository {}", e);
@@ -61,7 +63,7 @@ public class GitProcessor implements VcsProcessor {
     @Override
     public void addFile(File file) {
         try {
-            String rightPath = file.getPath().replace("\\", "/");
+            String rightPath = getGitFriendlyPath(file.getPath());
 
             DirCache call = git.add().addFilepattern(rightPath).call();
 

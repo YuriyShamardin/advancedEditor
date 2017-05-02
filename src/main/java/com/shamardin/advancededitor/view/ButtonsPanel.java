@@ -29,19 +29,16 @@ public class ButtonsPanel extends JPanel {
         JButton addToGit = new JButton("AddToGit");
         addToGit.addActionListener(e -> {
             gitController.addFileToVcs(gitFilesListPanel.getSelectedFile());
-            gitController.refreshGitPanel();
         });
         add(addToGit);
 
-        JButton updateStatus = new JButton("Update");
-        updateStatus.addActionListener(e -> {
-            fileStatusContainer.updateAllFileStatuses();
-        });
+       /* JButton updateStatus = new JButton("Update");
+        updateStatus.addActionListener(e -> fileStatusContainer.updateAllFileStatuses());
 
-        add(updateStatus);
+        add(updateStatus);*/
 
         JButton refreshGitTree = new JButton("Refresh");
-        refreshGitTree.addActionListener(e -> gitController.refreshGitPanel());
+        refreshGitTree.addActionListener(e -> gitController.updateGitPanel());
         add(refreshGitTree);
     }
 

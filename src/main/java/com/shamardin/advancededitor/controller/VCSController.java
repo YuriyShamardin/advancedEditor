@@ -7,7 +7,9 @@ public interface VCSController {
 
     void addFileToVcs(File file);
 
+    void updateGitPanel();
+
     void refreshGitPanel();
 
-    void removeFile();
+    void removeFile(String fileName);
 }

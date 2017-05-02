@@ -4,14 +4,17 @@ import java.io.File;
 import java.util.List;
 
 public interface FileProcessor {
-    String loadFileInContainer(File file);
 
-//    String readFile(File file);
+    /**
+     * If file does't open, read from disk and add as tracked.
+     * @param file
+     * @return fil content
+     */
+    String getFileContent(File file);
 
-    boolean isLoaded(File file);
+    boolean isFileTracked(File file);
 
-    // TODO: 01-May-17 Silly name
-    void removeFile(File file);
+    void unTrackFile(File file);
 
     List<File> getAllTrackedFiles();
 }

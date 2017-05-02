@@ -1,8 +1,11 @@
 package com.shamardin.advancededitor.controller;
 
+import com.shamardin.advancededitor.PathUtil;
+import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.core.git.FileStatusContainer;
 import com.shamardin.advancededitor.view.FileContentArea;
 import com.shamardin.advancededitor.view.FileTreePanel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +13,24 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.util.List;
 
+import static com.shamardin.advancededitor.core.git.FileStatus.MODIFIED;
+
+@Slf4j
 @Component
-public class FileChangeController implements KeyListener {
+public class FileChangeListener implements KeyListener {
     @Autowired
     private FileTreePanel fileTreePanel;
     @Autowired
     private FileStatusContainer fileStatusContainer;
     @Autowired
     private FileTreeController fileTreeController;
+
+    @Autowired
+    private VCSController vcsController;
+    @Autowired
+    private FileProcessor fileProcessor;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -28,17 +40,27 @@ public class FileChangeController implements KeyListener {
             @Override
             protected Void doInBackground() throws Exception {
                 FileContentArea fileContentArea = (FileContentArea) e.getSource();
-                String rootPath = fileTreeController.getRootPath();
                 String fullPath = fileTreePanel.getSelectedFilePath();
-                file = new File(fullPath.replace(rootPath, ""));
-                fileStatusContainer.updateFileStatus(file);
+
+                String persistContent = fileProcessor.getFileContent(new File(fullPath));
+                String newContent = fileContentArea.getText();
+
+                file = PathUtil.getFileWithRelativePath(fullPath);
+                if(!persistContent.equals(newContent)) {
+                    if(fileStatusContainer.getFileStatus(file) != MODIFIED) {
+                        fileStatusContainer.setFileAsModified(file);
+                        publish();
+                    }
+                } else {
+                    fileStatusContainer.updateFileStatus(file);
+                    publish();
+                }
                 return null;
             }
 
-
             @Override
-            protected void done() {
-                fileStatusContainer.updateFileStatus(file);
+            protected void process(List<Void> chunks) {
+                vcsController.refreshGitPanel();
             }
         };
         statusUpdater.execute();

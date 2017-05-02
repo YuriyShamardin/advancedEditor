@@ -41,7 +41,7 @@ public class PersistenceFileProcessorTest {
 
         //when:
         for (int i = 0; i < 10; i++) {
-            fileProcessor.loadFileInContainer(file);
+            fileProcessor.trackFile(file);
         }
 
         //then:

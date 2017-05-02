@@ -1,6 +1,7 @@
 package com.shamardin.advancededitor.controller;
 
 import com.shamardin.advancededitor.core.fileloading.FileProcessor;
+import com.shamardin.advancededitor.view.FileContentTab;
 import com.shamardin.advancededitor.view.FileTreePanel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
 import static java.io.File.separator;
 import static org.apache.commons.lang3.ArrayUtils.nullToEmpty;
 
@@ -29,17 +32,16 @@ public class FileTreeControllerImpl implements FileTreeController {
     private FileTreePanel fileTreePanel;
 
     @Autowired
+    private FileContentTab fileContentTab;
+    @Autowired
     private FileContentController fileContentController;
 
     @Getter
     private List<File> fileList = new ArrayList<>();
 
-    @Getter
-    private String rootPath;
 
     @Override
     public void showFileTree(File file) {
-        rootPath = file.getPath() + "\\";
         fileTreePanel.showTree(buildTree(null, file, file.getPath()));
     }
 
@@ -61,7 +63,7 @@ public class FileTreeControllerImpl implements FileTreeController {
                 buildTree(curDir, f, thisObject);
             } else {
                 if(!fullPath.contains("\\.")) {
-                    fileList.add(new File(fullPath.replace(rootPath, "")));
+                    fileList.add(getFileWithRelativePath(fullPath));
                 }
                 filePath.addElement(thisObject);
             }
@@ -83,6 +85,19 @@ public class FileTreeControllerImpl implements FileTreeController {
         if(file.isFile()) {
             fileContentController.showFile(file);
         }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        int selectedComponent = fileContentTab.getSelectedIndex();
+        String fileNameFromTitle = getFileWithRelativePath(fileContentTab.getTitleAt(selectedComponent)).getPath();
+        log.info(fileNameFromTitle);
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) fileTreePanel.getFileTree().getModel().getRoot();
+        String[] split = fileNameFromTitle.split("\\\\");
+
+
+        TreePath nextMatch = fileTreePanel.getFileTree().getNextMatch(split[split.length - 1], 0, null);
+        fileTreePanel.getFileTree().setSelectionPath(nextMatch);
     }
 }
 

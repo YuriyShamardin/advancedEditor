@@ -16,18 +16,16 @@ import static lombok.AccessLevel.PACKAGE;
 
 @Slf4j
 @Component
-public class PersistenceFileProcessor implements FileProcessor {
+class PersistenceFileProcessor implements FileProcessor {
 
     @VisibleForTesting
     @Setter(PACKAGE)
     @Autowired
-    private FileContainer fileContainer;
+    private TrackedFileContainer trackedFileContainer;
 
     @Override
-    public synchronized String loadFileInContainer(File file) {
-        String content = readFileFromDisk(file);
-        fileContainer.addFile(file, content);
-        return fileContainer.get(file);
+    public synchronized String getFileContent(File file) {
+        return trackedFileContainer.computeIfAbsent(file, this::readFileFromDisk);
     }
 
     private String readFileFromDisk(File file) {
@@ -51,36 +49,17 @@ public class PersistenceFileProcessor implements FileProcessor {
     }
 
     @Override
-    public boolean isLoaded(File file) {
-        return fileContainer.containsFile(file);
+    public boolean isFileTracked(File file) {
+        return trackedFileContainer.containsFile(file);
     }
 
     @Override
-    public void removeFile(File file) {
-        fileContainer.remove(file);
+    public void unTrackFile(File file) {
+        trackedFileContainer.remove(file);
     }
 
     @Override
     public List<File> getAllTrackedFiles() {
-        return fileContainer.getAllFiles();
+        return trackedFileContainer.getAllFiles();
     }
-
-   /* @Override
-    public String readFile(File file) {
-        new SwingWorker<Void, Void>() {
-            private String content;
-
-            @Override
-            protected Void doInBackground() throws Exception {
-                content = readFileFromDisk(file);
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                fileContainer.addFile(file, content);
-            }
-        }.execute();
-        return null;
-    }*/
 }

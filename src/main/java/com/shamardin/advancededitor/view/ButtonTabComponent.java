@@ -1,13 +1,12 @@
 package com.shamardin.advancededitor.view;
 
-import com.shamardin.advancededitor.controller.FileContentController;
-import com.shamardin.advancededitor.controller.FileTreeController;
-import com.shamardin.advancededitor.controller.VCSController;
-
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Component to be used as tabComponent;
@@ -15,45 +14,23 @@ import java.awt.event.*;
  * a JButton to close the tab it belongs to
  */
 public class ButtonTabComponent extends JPanel {
-    private VCSController vcsController;
 
-    private final JTabbedPane pane;
-
-
-    public ButtonTabComponent(final JTabbedPane pane, VCSController vcsController) {
+    public ButtonTabComponent(String title, ActionListener tabCloseListener) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        this.vcsController = vcsController;
-        if(pane == null) {
-            throw new NullPointerException("TabbedPane is null");
-        }
-        this.pane = pane;
         setOpaque(false);
-
-        //make JLabel read titles from JTabbedPane
-        JLabel label = new JLabel() {
-            public String getText() {
-                int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-                if(i != -1) {
-                    return pane.getTitleAt(i);
-                }
-                return null;
-            }
-        };
-
+        JLabel label = new JLabel(title);
         add(label);
         //add more space between the label and the button
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-        //tab button
-        JButton button = new TabButton();
-        add(button);
+
+        add(new TabButton(tabCloseListener));
         //add more space to the top of the component
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
     }
 
-    private class TabButton extends JButton implements ActionListener {
-        TabButton() {
+    private class TabButton extends JButton {
+        TabButton(ActionListener tabCloseListener) {
             int size = 17;
             setPreferredSize(new Dimension(size, size));
             setToolTipText("close this tab");
@@ -70,18 +47,9 @@ public class ButtonTabComponent extends JPanel {
             addMouseListener(buttonMouseListener);
             setRolloverEnabled(true);
             //Close the proper tab by clicking the button
-            addActionListener(this);
+            addActionListener(tabCloseListener);
+
         }
-
-        public void actionPerformed(ActionEvent e) {
-            int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-            if(i != -1) {
-                pane.remove(i);
-
-                vcsController.removeFile();
-            }
-        }
-
 
         //paint the cross
         protected void paintComponent(Graphics g) {
@@ -101,6 +69,7 @@ public class ButtonTabComponent extends JPanel {
             g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight() - delta - 1);
             g2.dispose();
         }
+
     }
 
     private final static MouseListener buttonMouseListener = new MouseAdapter() {

@@ -42,7 +42,9 @@ public class FileTreePanel extends JPanel {
         fileTree.setModel(new DefaultTreeModel(treeNode));
         scrollpane.getViewport().add(fileTree);
     }
-    public String getSelectedFilePath(){
+
+    // TODO: 02-May-17 sync?
+    public synchronized String getSelectedFilePath(){
         TreePath path = fileTree.getSelectionPath();
         return StringUtils.join(path.getPath(), separator);
     }

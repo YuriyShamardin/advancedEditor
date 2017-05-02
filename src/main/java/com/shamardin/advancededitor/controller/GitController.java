@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
+import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
+
 @Slf4j
 @Component
 public class GitController implements VCSController {
@@ -35,6 +37,7 @@ public class GitController implements VCSController {
     @Autowired
     private FileProcessor fileProcessor;
 
+    private String rootPath;
 
     @Override
     public void openRepository(File file) {
@@ -46,36 +49,35 @@ public class GitController implements VCSController {
                 fileTreeController.showFileTree(file);
             }
         }
-        refreshGitPanel();
+        this.rootPath = file.getPath() + "\\";
+        updateGitPanel();
     }
 
     @Override
     public void addFileToVcs(File file) {
         vcsProcessor.addFile(file);
+        updateGitPanel();
     }
 
     @Override
-    public void refreshGitPanel() {
+    public void updateGitPanel() {
         new SwingWorker<Void, File>() {
             @Override
             protected Void doInBackground() throws Exception {
-
-//                List<File> fileList = fileTreeController.getFileList();
                 List<File> fileList = fileProcessor.getAllTrackedFiles();
                 gitFilesListPanel.clearGitFileList();
                 gitFilesListPanel.repaint();
                 for (File file : fileList) {
-                    fileStatusContainer.updateFileStatus(file);
+                    fileStatusContainer.updateFileStatus(getFileWithRelativePath(file));
                     publish(file);
                 }
-
                 return null;
             }
 
             @Override
             protected void process(List<File> files) {
                 for (File file : files) {
-                    gitFilesListPanel.addFileInList(file);
+                    gitFilesListPanel.addFileInList(getFileWithRelativePath(file));
                 }
             }
 
@@ -87,10 +89,39 @@ public class GitController implements VCSController {
     }
 
     @Override
-    public void removeFile() {
-        String fullPath = fileTreePanel.getSelectedFilePath();
-        String rootPath = fileTreeController.getRootPath();
-        fileProcessor.removeFile(new File(fullPath.replace(rootPath, "")));
+    public void refreshGitPanel() {
+        new SwingWorker<Void, File>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<File> fileList = fileProcessor.getAllTrackedFiles();
+                gitFilesListPanel.clearGitFileList();
+                gitFilesListPanel.repaint();
+                for (File file : fileList) {
+                    fileStatusContainer.getFileStatus(getFileWithRelativePath(file));
+                    publish(file);
+                }
+                return null;
+            }
 
+            @Override
+            protected void process(List<File> files) {
+                for (File file : files) {
+                    gitFilesListPanel.addFileInList(getFileWithRelativePath(file));
+                }
+            }
+
+            @Override
+            protected void done() {
+                gitFilesListPanel.repaint();
+            }
+        }.execute();
     }
+
+    @Override
+    public void removeFile(String fileName) {
+        String fullPath = fileTreePanel.getSelectedFilePath();
+        fileProcessor.unTrackFile(new File(fileName));
+        updateGitPanel();
+    }
+
 }

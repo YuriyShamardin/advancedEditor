@@ -13,33 +13,22 @@ import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-@Component
 @Slf4j
-class FileContainer {
-    //    private LoadingCache<File, String> filesContent;
+@Component
+class TrackedFileContainer {
+    /**
+     * Contains full path and content
+     */
     private Map<File, String> filesContent = new ConcurrentHashMap<>();
-
-//    @Autowired
-//    private FileProcessor fileProcessor;
 
     @PostConstruct
     public void init() {
-//        filesContent = CacheBuilder.newBuilder()
-//                in bytes
-//                .maximumWeight(1000000)
-//                .weigher((Weigher<File, String>) (k, content) -> content.getBytes().length)
-//                .build(new CacheLoader<File, String>() {
-//                    @Override
-//                    public String load(File key) throws Exception {
-//                        return fileProcessor.readFileFromDisk(key);
-//                    }
-//                });
-
         FileSynchronizer fileSynchronizer = new FileSynchronizer();
-        Timer timer = new Timer(5_0000, fileSynchronizer);
+        Timer timer = new Timer(5_000, fileSynchronizer);
 //        timer.start();
     }
 
@@ -51,8 +40,12 @@ class FileContainer {
         return filesContent.containsKey(file);
     }
 
-    public List<File> getAllFiles() {
+    List<File> getAllFiles() {
         return newArrayList(filesContent.keySet());
+    }
+
+    String computeIfAbsent(File file, Function<File, String> mappingFnction) {
+        return filesContent.computeIfAbsent(file, mappingFnction);
     }
 
     private class FileSynchronizer implements ActionListener {
@@ -63,8 +56,9 @@ class FileContainer {
                 protected Void doInBackground() throws Exception {
                     for (Map.Entry<File, String> fileEntry : filesContent.entrySet()) {
                         log.info("write to {}", fileEntry.getKey());
-                        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileEntry.getKey()));
-                        bufferedWriter.write(fileEntry.getValue());
+                        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileEntry.getKey()))) {
+                            bufferedWriter.write(fileEntry.getValue());
+                        }
                     }
                     return null;
                 }
@@ -76,7 +70,7 @@ class FileContainer {
         filesContent.put(file, content);
     }
 
-    public void remove(File file) {
+    void remove(File file) {
         if(filesContent.remove(file) == null) {
             log.info("can not find file {}", file);
         }
