@@ -34,7 +34,7 @@ public class FileStatusContainer {
         fileStatusMap.put(file, MODIFIED);
     }
 
-    public FileStatus getFileStatus(File file){
+    public FileStatus getFileStatus(File file) {
         return fileStatusMap.get(file);
     }
 

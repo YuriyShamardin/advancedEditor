@@ -1,6 +1,7 @@
-package com.shamardin.advancededitor.controller;
+package com.shamardin.advancededitor.listener;
 
 import com.shamardin.advancededitor.PathUtil;
+import com.shamardin.advancededitor.controller.VcsController;
 import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.core.git.FileStatusContainer;
 import com.shamardin.advancededitor.view.FileContentArea;
@@ -27,7 +28,7 @@ public class FileChangeListener implements KeyListener {
     private FileStatusContainer fileStatusContainer;
 
     @Autowired
-    private VCSController vcsController;
+    private VcsController vcsController;
     @Autowired
     private FileProcessor fileProcessor;
 

@@ -2,7 +2,7 @@ package com.shamardin.advancededitor.controller;
 
 import java.io.File;
 
-public interface VCSController {
+public interface VcsController {
     void openRepository(File file);
 
     void addFileToVcs(File file);

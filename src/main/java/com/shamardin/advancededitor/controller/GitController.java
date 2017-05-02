@@ -19,7 +19,7 @@ import static com.shamardin.advancededitor.PathUtil.getRoot;
 
 @Slf4j
 @Component
-public class GitController implements VCSController {
+public class GitController implements VcsController {
     @Autowired
     private VcsProcessor vcsProcessor;
 

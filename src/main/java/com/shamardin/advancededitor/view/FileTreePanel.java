@@ -1,6 +1,7 @@
 package com.shamardin.advancededitor.view;
 
 import com.shamardin.advancededitor.controller.FileTreeController;
+import com.shamardin.advancededitor.listener.FileTreeSelectionListener;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,10 @@ import static java.io.File.separator;
 public class FileTreePanel extends JPanel {
     @Autowired
     private FileTreeController fileTreeController;
+
+    @Autowired
+    private FileTreeSelectionListener fileTreeSelectionListener;
+
     @Getter
     private JTree fileTree;
     private JScrollPane scrollpane = new JScrollPane();
@@ -35,7 +40,7 @@ public class FileTreePanel extends JPanel {
         setPreferredSize(new Dimension(200, 400));
 
         // Add a listener
-        fileTree.addTreeSelectionListener(fileTreeController);
+        fileTree.addTreeSelectionListener(fileTreeSelectionListener);
     }
 
     public void showTree(DefaultMutableTreeNode treeNode) {
@@ -43,8 +48,7 @@ public class FileTreePanel extends JPanel {
         scrollpane.getViewport().add(fileTree);
     }
 
-    // TODO: 02-May-17 sync?
-    public synchronized String getSelectedFilePath(){
+    public synchronized String getSelectedFilePath() {
         TreePath path = fileTree.getSelectionPath();
         return StringUtils.join(path.getPath(), separator);
     }

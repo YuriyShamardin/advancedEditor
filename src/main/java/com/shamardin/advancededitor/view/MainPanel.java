@@ -1,6 +1,5 @@
 package com.shamardin.advancededitor.view;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import static lombok.AccessLevel.PACKAGE;
 
 @Component
 public class MainPanel extends JPanel {

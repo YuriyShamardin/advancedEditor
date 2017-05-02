@@ -1,6 +1,5 @@
 package com.shamardin.advancededitor.view;
 
-import com.shamardin.advancededitor.controller.MouseController;
 import com.shamardin.advancededitor.core.git.FileStatusContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 @org.springframework.stereotype.Component
 public class GitFilesListPanel extends JPanel {
 
-    @Autowired
-    private MouseController mouseController;
     @Autowired
     private FileStatusContainer fileStatusContainer;
 
@@ -36,7 +33,6 @@ public class GitFilesListPanel extends JPanel {
         CellRender cellRenderer = new CellRender();
         view.setCellRenderer(cellRenderer);
         view.setSelectionForeground(Color.RED);
-        view.addMouseListener(mouseController);
         add(new JScrollPane(view));
     }
 

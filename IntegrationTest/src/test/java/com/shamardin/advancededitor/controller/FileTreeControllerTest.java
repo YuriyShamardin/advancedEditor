@@ -3,7 +3,6 @@ package com.shamardin.advancededitor.controller;
 import com.shamardin.advancededitor.Config;
 import com.shamardin.advancededitor.Editor;
 import com.shamardin.advancededitor.view.FileContentArea;
-import lombok.SneakyThrows;
 import org.fest.swing.core.ComponentFinder;
 import org.fest.swing.core.Robot;
 import org.junit.Before;

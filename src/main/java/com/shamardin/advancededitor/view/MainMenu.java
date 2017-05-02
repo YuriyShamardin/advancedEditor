@@ -1,8 +1,8 @@
 package com.shamardin.advancededitor.view;
 
 
-import com.shamardin.advancededitor.controller.GitController;
 import com.shamardin.advancededitor.controller.FileTreeController;
+import com.shamardin.advancededitor.controller.VcsController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class MainMenu extends JMenuBar {
     private FileTreeController fileTreeController;
 
     @Autowired
-    private GitController gitController;
+    private VcsController vcsController;
 
     @PostConstruct
     public void init() {
@@ -35,7 +35,7 @@ public class MainMenu extends JMenuBar {
             if(ret == APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
                 fileTreeController.showFileTree(file);
-                gitController.openRepository(file);
+                vcsController.openRepository(file);
             }
         });
         JMenuItem exit = new JMenuItem("Exit");

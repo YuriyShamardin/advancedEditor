@@ -1,14 +1,8 @@
 package com.shamardin.advancededitor;
 
-import com.shamardin.advancededitor.view.FileContentArea;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-
-import javax.swing.*;
-
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 
 @Configuration
 @ComponentScan

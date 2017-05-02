@@ -1,6 +1,7 @@
 package com.shamardin.advancededitor.controller;
 
 import com.shamardin.advancededitor.core.fileloading.FileProcessor;
+import com.shamardin.advancededitor.listener.FileChangeListener;
 import com.shamardin.advancededitor.view.ButtonTabComponent;
 import com.shamardin.advancededitor.view.FileContentArea;
 import com.shamardin.advancededitor.view.FileContentTab;
@@ -33,7 +34,7 @@ public class FileContentControllerImpl implements FileContentController, ActionL
     private FileChangeListener fileChangeListener;
 
     @Autowired
-    private VCSController vcsController;
+    private VcsController vcsController;
 
     private volatile TextShower shower;
 

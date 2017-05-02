@@ -7,6 +7,7 @@ public interface FileProcessor {
 
     /**
      * If file does't open, read from disk and add as tracked.
+     *
      * @param file
      * @return fil content
      */
