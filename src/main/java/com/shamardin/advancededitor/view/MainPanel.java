@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 
 @Component
 public class MainPanel extends JPanel {
@@ -21,26 +22,37 @@ public class MainPanel extends JPanel {
     private GitFilesListPanel gitFilesListPanel;
 
     @Autowired
+    private UntrackFilePanel untrackFilePanel;
+
+    @Autowired
     private FileContentTab fileContentTab;
 
     @PostConstruct
     public void init() {
-        JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT);
+        JSplitPane filesInfoSplitPane = new JSplitPane(HORIZONTAL_SPLIT);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        splitPane.setOneTouchExpandable(false);
-        splitPane.setLeftComponent(fileTreePanel);
+        filesInfoSplitPane.setOneTouchExpandable(false);
+        filesInfoSplitPane.setLeftComponent(fileTreePanel);
+        filesInfoSplitPane.setRightComponent(fileContentTab);
+        filesInfoSplitPane.setAlignmentX(LEFT_ALIGNMENT);
 
-        splitPane.setRightComponent(fileContentTab);
-
-        splitPane.setAlignmentX(LEFT_ALIGNMENT);
-        add(splitPane);
-
-        add(new JSeparator());
+        JPanel gitPanel = new JPanel();
+        gitPanel.setLayout(new BoxLayout(gitPanel, BoxLayout.Y_AXIS));
+        gitPanel.add(new JSeparator());
         buttonsPanel.setAlignmentX(LEFT_ALIGNMENT);
-        add(buttonsPanel);
-        add(new JSeparator());
+        gitPanel.add(buttonsPanel);
 
+        JSplitPane gitInfoSplitPane = new JSplitPane(VERTICAL_SPLIT);
         gitFilesListPanel.setAlignmentX(LEFT_ALIGNMENT);
-        add(gitFilesListPanel);
+        gitInfoSplitPane.setTopComponent(gitFilesListPanel);
+        untrackFilePanel.setAlignmentX(LEFT_ALIGNMENT);
+        gitInfoSplitPane.setBottomComponent(untrackFilePanel);
+
+        gitPanel.add(gitInfoSplitPane);
+        JSplitPane centerSplitPane = new JSplitPane(VERTICAL_SPLIT);
+        centerSplitPane.setTopComponent(filesInfoSplitPane);
+        centerSplitPane.setBottomComponent(gitPanel);
+
+        add(centerSplitPane);
     }
 }

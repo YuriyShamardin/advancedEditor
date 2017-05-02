@@ -6,7 +6,9 @@ import com.shamardin.advancededitor.core.git.VcsProcessor;
 import com.shamardin.advancededitor.view.CreateRepositoryDialog;
 import com.shamardin.advancededitor.view.FileTreePanel;
 import com.shamardin.advancededitor.view.GitFilesListPanel;
+import com.shamardin.advancededitor.view.UntrackFilePanel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +40,12 @@ public class GitController implements VcsController {
     @Autowired
     private FileProcessor fileProcessor;
 
+    @Autowired
+    private UntrackFilePanel untrackFilePanel;
+
+    private static int SHOW_AS_TRACKED = 1;
+    private static int SHOW_AS_UNTRACKED = 0;
+
     @Override
     public void openRepository(File file) {
         boolean isOpened = vcsProcessor.openRepository(file);
@@ -57,67 +65,85 @@ public class GitController implements VcsController {
 
     @Override
     public void updateGitPanel() {
-        new SwingWorker<Void, File>() {
+        new SwingWorker<Void, Pair<Integer, File>>() {
             @Override
             protected Void doInBackground() throws Exception {
                 List<File> fileList = fileProcessor.getAllTrackedFiles();
                 gitFilesListPanel.clearGitFileList();
+                untrackFilePanel.clearUntrackFileList();
                 for (File file : fileList) {
                     fileStatusContainer.updateFileStatus(getFileWithRelativePath(file));
-                    publish(file);
+                    publish(Pair.of(SHOW_AS_TRACKED, file));
                 }
                 List<String> removedFiles = vcsProcessor.getAllRemovedFiles();
                 for (String string : removedFiles) {
-                    publish(new File(string));
+                    publish(Pair.of(SHOW_AS_TRACKED, new File(string)));
+                }
+                List<String> allUntrackedFiles = vcsProcessor.getAllUntrackedFiles();
+                for (String untrackedFile : allUntrackedFiles) {
+                    publish(Pair.of(SHOW_AS_UNTRACKED, new File(untrackedFile)));
                 }
                 return null;
             }
 
             @Override
-            protected void process(List<File> files) {
-                for (File file : files) {
-                    gitFilesListPanel.addFileInList(getFileWithRelativePath(file));
+            protected void process(List<Pair<Integer, File>> files) {
+                for (Pair<Integer, File> pair : files) {
+                    if(pair.getKey() == SHOW_AS_TRACKED) {
+                        gitFilesListPanel.addFileInList(getFileWithRelativePath(pair.getRight()));
+                    } else {
+                        untrackFilePanel.addFileInList(getFileWithRelativePath(pair.getRight()));
+                    }
                 }
             }
 
             @Override
             protected void done() {
-                log.info("done updating");
                 gitFilesListPanel.repaint();
+                untrackFilePanel.repaint();
             }
         }.execute();
     }
 
     @Override
     public void refreshGitPanel() {
-        new SwingWorker<Void, File>() {
+        new SwingWorker<Void, Pair<Integer, File>>() {
             @Override
             protected Void doInBackground() throws Exception {
                 List<File> fileList = fileProcessor.getAllTrackedFiles();
                 gitFilesListPanel.clearGitFileList();
-                gitFilesListPanel.repaint();
+                untrackFilePanel.clearUntrackFileList();
                 for (File file : fileList) {
                     fileStatusContainer.getFileStatus(getFileWithRelativePath(file));
-                    publish(file);
+                    publish(Pair.of(SHOW_AS_TRACKED, file));
                 }
 
                 List<String> removedFiles = vcsProcessor.getAllRemovedFiles();
                 for (String string : removedFiles) {
-                    publish(new File(string));
+                    publish(Pair.of(SHOW_AS_TRACKED, new File(string)));
+                }
+                List<String> allUntrackedFiles = vcsProcessor.getAllUntrackedFiles();
+                for (String untrackedFile : allUntrackedFiles) {
+                    publish(Pair.of(SHOW_AS_UNTRACKED, new File(untrackedFile)));
                 }
                 return null;
             }
 
             @Override
-            protected void process(List<File> files) {
-                for (File file : files) {
-                    gitFilesListPanel.addFileInList(getFileWithRelativePath(file));
+            protected void process(List<Pair<Integer, File>> files) {
+                for (Pair<Integer, File> pair : files) {
+                    if(pair.getKey() == SHOW_AS_TRACKED) {
+                        gitFilesListPanel.addFileInList(getFileWithRelativePath(pair.getRight()));
+                    } else {
+                        untrackFilePanel.addFileInList(getFileWithRelativePath(pair.getRight()));
+                    }
                 }
             }
 
             @Override
             protected void done() {
                 gitFilesListPanel.repaint();
+                untrackFilePanel.repaint();
             }
         }.execute();
     }

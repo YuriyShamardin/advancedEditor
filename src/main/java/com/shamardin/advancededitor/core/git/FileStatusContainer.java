@@ -26,8 +26,8 @@ public class FileStatusContainer {
         return fileStatusMap.computeIfAbsent(file, vcsProcessor::computeFileStatus).getColor();
     }
 
-    public void updateFileStatus(File file) {
-        fileStatusMap.put(file, vcsProcessor.computeFileStatus(file));
+    public FileStatus updateFileStatus(File file) {
+        return fileStatusMap.put(file, vcsProcessor.computeFileStatus(file));
     }
 
     public void setFileAsModified(File file) {

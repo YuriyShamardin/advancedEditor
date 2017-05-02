@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.lang.Integer.MAX_VALUE;
 import static lombok.AccessLevel.PACKAGE;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
 
 @Slf4j
 @Component
@@ -42,7 +43,7 @@ class PersistenceFileProcessor implements FileProcessor {
                 stringBuilder.append(new String(buffer));
             }
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            log.error(getMessage(e));
             return "Can not open the file! For details look at log file";
         }
         return stringBuilder.toString();

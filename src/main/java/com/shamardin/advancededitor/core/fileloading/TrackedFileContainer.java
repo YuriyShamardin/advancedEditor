@@ -27,8 +27,9 @@ class TrackedFileContainer {
 
     @PostConstruct
     public void init() {
+        // TODO: 03-May-17 prototype to automatic save file
         FileSynchronizer fileSynchronizer = new FileSynchronizer();
-        Timer timer = new Timer(5_000, fileSynchronizer);
+        Timer timer = new Timer(10_000, fileSynchronizer);
 //        timer.start();
     }
 

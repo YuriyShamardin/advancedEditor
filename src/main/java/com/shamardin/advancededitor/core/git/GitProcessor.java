@@ -2,7 +2,6 @@ package com.shamardin.advancededitor.core.git;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.shamardin.advancededitor.PathUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
@@ -167,8 +166,12 @@ public class GitProcessor implements VcsProcessor {
         return null;
     }
 
-    @SneakyThrows
+    // TODO: 03-May-17 for future
     private synchronized void commitAllChanges(String message) {
-        git.commit().setMessage(message).call();
+        try {
+            git.commit().setMessage(message).call();
+        } catch (GitAPIException e) {
+            log.error(getMessage(e));
+        }
     }
 }
