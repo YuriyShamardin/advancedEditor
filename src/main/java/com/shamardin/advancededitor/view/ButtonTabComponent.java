@@ -52,6 +52,7 @@ public class ButtonTabComponent extends JPanel {
         }
 
         //paint the cross
+        @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g.create();
@@ -73,6 +74,7 @@ public class ButtonTabComponent extends JPanel {
     }
 
     private final static MouseListener buttonMouseListener = new MouseAdapter() {
+        @Override
         public void mouseEntered(MouseEvent e) {
             Component component = e.getComponent();
             if(component instanceof AbstractButton) {
@@ -81,6 +83,7 @@ public class ButtonTabComponent extends JPanel {
             }
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
             Component component = e.getComponent();
             if(component instanceof AbstractButton) {

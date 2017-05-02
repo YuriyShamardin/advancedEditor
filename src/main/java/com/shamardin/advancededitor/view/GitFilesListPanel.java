@@ -1,6 +1,7 @@
 package com.shamardin.advancededitor.view;
 
 import com.shamardin.advancededitor.core.git.FileStatusContainer;
+import com.shamardin.advancededitor.listener.SelectVcsElementListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,9 @@ public class GitFilesListPanel extends JPanel {
     @Autowired
     private FileStatusContainer fileStatusContainer;
 
+    @Autowired
+    private SelectVcsElementListener selectVcsElementListener;
+
     private DefaultListModel<File> listModel;
     private JList<File> view;
 
@@ -34,6 +38,7 @@ public class GitFilesListPanel extends JPanel {
         view.setCellRenderer(cellRenderer);
         view.setSelectionForeground(Color.RED);
         add(new JScrollPane(view));
+        view.addListSelectionListener(selectVcsElementListener);
     }
 
     public void addFileInList(File file) {

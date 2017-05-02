@@ -41,12 +41,10 @@ public class GitController implements VcsController {
     @Override
     public void openRepository(File file) {
         boolean isOpened = vcsProcessor.openRepository(file);
-        if(!isOpened) {
-            if(CreateRepositoryDialog.isNeedToCreateRepository()) {
-                vcsProcessor.createRepository(file);
-                //refresh
-                fileTreeController.showFileTree(file);
-            }
+        if(!isOpened && CreateRepositoryDialog.isNeedToCreateRepository()) {
+            vcsProcessor.createRepository(file);
+            //refresh
+            fileTreeController.showFileTree(file);
         }
         updateGitPanel();
     }
@@ -64,7 +62,6 @@ public class GitController implements VcsController {
             protected Void doInBackground() throws Exception {
                 List<File> fileList = fileProcessor.getAllTrackedFiles();
                 gitFilesListPanel.clearGitFileList();
-                gitFilesListPanel.repaint();
                 for (File file : fileList) {
                     fileStatusContainer.updateFileStatus(getFileWithRelativePath(file));
                     publish(file);
@@ -85,6 +82,7 @@ public class GitController implements VcsController {
 
             @Override
             protected void done() {
+                log.info("done updating");
                 gitFilesListPanel.repaint();
             }
         }.execute();

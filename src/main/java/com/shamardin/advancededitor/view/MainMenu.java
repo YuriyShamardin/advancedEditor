@@ -25,13 +25,13 @@ public class MainMenu extends JMenuBar {
     public void init() {
         JMenu mainTab = new JMenu("Menu");
 
-        JMenuItem openFile = new JMenuItem("Open file");
+        JMenuItem openFile = new JMenuItem("Open directory");
         mainTab.add(openFile);
         openFile.addActionListener(e ->
         {
             JFileChooser fileopen = new JFileChooser();
             fileopen.setFileSelectionMode(DIRECTORIES_ONLY);
-            int ret = fileopen.showDialog(null, "Открыть файл");
+            int ret = fileopen.showDialog(null, "Open directory");
             if(ret == APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
                 fileTreeController.showFileTree(file);

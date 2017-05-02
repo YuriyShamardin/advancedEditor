@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
@@ -25,13 +24,13 @@ public class SelectTabListener implements ChangeListener {
     @Override
     public void stateChanged(ChangeEvent e) {
         int selectedComponent = fileContentTab.getSelectedIndex();
-        String fileNameFromTitle = getFileWithRelativePath(fileContentTab.getTitleAt(selectedComponent)).getPath();
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) fileTreePanel.getFileTree().getModel().getRoot();
-        String[] split = fileNameFromTitle.split("\\\\");
-
-        // TODO: 02-May-17 Bad solution!!!!
-        TreePath nextMatch = fileTreePanel.getFileTree().getNextMatch(split[split.length - 1], 0, null);
-        fileTreePanel.getFileTree().setSelectionPath(nextMatch);
+        //if removed last tab
+        if(selectedComponent != -1) {
+            String fileNameFromTitle = getFileWithRelativePath(fileContentTab.getTitleAt(selectedComponent)).getPath();
+            String[] split = fileNameFromTitle.split("\\\\");
+            TreePath nextMatch = fileTreePanel.getFileTree().getNextMatch(split[split.length - 1], 0, null);
+            fileTreePanel.getFileTree().setSelectionPath(nextMatch);
+        }
     }
 }
 

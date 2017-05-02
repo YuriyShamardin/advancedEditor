@@ -19,12 +19,12 @@ public class Editor extends JFrame {
     private MainPanel mainPanel;
 
     @Autowired
-    private MainMenu menuBar;
+    private MainMenu menu;
 
-    public void start() throws HeadlessException {
+    public void start() {
         setLayout(new BorderLayout());
 
-        setJMenuBar(menuBar);
+        setJMenuBar(menu);
         add(mainPanel);
 
         setTitle("Advanced editor");

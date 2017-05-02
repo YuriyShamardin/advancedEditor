@@ -82,8 +82,9 @@ public class FileContentControllerImpl implements FileContentController, ActionL
         int indexOfTabComponent = fileContentTab.indexOfTabComponent(((java.awt.Component) e.getSource()).getParent());
         String fileNameFromTitle = fileContentTab.getTitleAt(indexOfTabComponent);
         fileProcessor.unTrackFile(new File(fileNameFromTitle));
-
+        vcsController.updateGitPanel();
         fileContentTab.remove(indexOfTabComponent);
+
     }
 
     //Show big text fast

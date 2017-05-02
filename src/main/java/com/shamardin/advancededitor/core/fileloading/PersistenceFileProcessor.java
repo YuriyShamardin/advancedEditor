@@ -35,7 +35,7 @@ class PersistenceFileProcessor implements FileProcessor {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        try (final FileInputStream fis = (new FileInputStream(file))) {
+        try (FileInputStream fis = new FileInputStream(file)) {
             int readData;
             while ((readData = fis.read(buffer)) > 0) {
                 log.info("read {} bytes from file {}. Full size is {}", readData, file.getName(), dataLength);
@@ -61,5 +61,10 @@ class PersistenceFileProcessor implements FileProcessor {
     @Override
     public List<File> getAllTrackedFiles() {
         return trackedFileContainer.getAllFiles();
+    }
+
+    @Override
+    public void saveFile(File file, String content) {
+        trackedFileContainer.addFile(file, content);
     }
 }

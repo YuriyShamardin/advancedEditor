@@ -18,4 +18,6 @@ public interface FileProcessor {
     void unTrackFile(File file);
 
     List<File> getAllTrackedFiles();
+
+    void saveFile(File file, String content);
 }

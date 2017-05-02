@@ -38,8 +38,4 @@ public class FileStatusContainer {
         return fileStatusMap.get(file);
     }
 
-//    public void updateAllFileStatuses() {
-//        fileStatusMap.keySet().forEach(file -> fileStatusMap.put(file, vcsProcessor.computeFileStatus(file)));
-//    }
-
 }
