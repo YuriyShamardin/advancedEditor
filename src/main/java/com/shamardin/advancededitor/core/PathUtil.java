@@ -1,4 +1,4 @@
-package com.shamardin.advancededitor;
+package com.shamardin.advancededitor.core;
 
 import java.io.File;
 
@@ -34,7 +34,7 @@ public class PathUtil {
     }
 
     /**
-     * replace all "\" symbols to /
+     * replace all '\' symbols to '/'
      */
     public static String getGitFriendlyPath(String path) {
         return path.replace("\\", "/");

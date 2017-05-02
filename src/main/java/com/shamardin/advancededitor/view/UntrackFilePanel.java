@@ -1,7 +1,5 @@
 package com.shamardin.advancededitor.view;
 
-import com.shamardin.advancededitor.listener.SelectVcsElementListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -13,9 +11,6 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
 @Component
 public class UntrackFilePanel extends JPanel {
-
-    @Autowired
-    private SelectVcsElementListener selectVcsElementListener;
 
     private DefaultListModel<File> listModel;
     private JList<File> view;

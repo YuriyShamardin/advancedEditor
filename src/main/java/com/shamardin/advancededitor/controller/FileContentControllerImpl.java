@@ -79,15 +79,18 @@ public class FileContentControllerImpl implements FileContentController, ActionL
     // Close tab was invoked
     @Override
     public void actionPerformed(ActionEvent e) {
-        int indexOfTabComponent = fileContentTab.indexOfTabComponent(((java.awt.Component) e.getSource()).getParent());
+        ButtonTabComponent buttonTabComponent = (ButtonTabComponent) ((java.awt.Component) e.getSource()).getParent();
+
+        int indexOfTabComponent = fileContentTab.indexOfTabComponent(buttonTabComponent);
         String fileNameFromTitle = fileContentTab.getTitleAt(indexOfTabComponent);
         fileProcessor.unTrackFile(new File(fileNameFromTitle));
         vcsController.updateGitPanel();
+        buttonTabComponent.removeTabCloseListener();
         fileContentTab.remove(indexOfTabComponent);
 
     }
 
-    //Show big text fast
+    //Show big text faster
     private class TextShower extends SwingWorker<String, String> {
         private String content;
         private FileContentArea fileContentArea;

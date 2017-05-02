@@ -1,6 +1,7 @@
 package com.shamardin.advancededitor.core.git;
 
 import com.shamardin.advancededitor.Config;
+import com.shamardin.advancededitor.core.PathUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Status;
 import org.junit.Test;
@@ -10,8 +11,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 @Slf4j
@@ -34,6 +37,15 @@ public class GitProcessorTest {
     }
 
     @Test
+    public void repositoryShouldSetRootInPathUtils() {
+        //when
+        processor.createRepository(dirWithRepo);
+
+        //then
+        assertThat(PathUtil.getRoot(), is(dirWithRepo.getPath()));
+    }
+
+    @Test
     public void repositoryShouldOpenExistRepo() {
         //when
         boolean success = processor.openRepository(dirWithRepo);
@@ -43,7 +55,7 @@ public class GitProcessorTest {
     }
 
     @Test
-    public void repositoryShouldReturnNullForNonExistRepo() {
+    public void repositoryShouldReturnFalseForNonExistRepo() {
         //when
         boolean success = processor.openRepository(dirWithoutRepo);
         //then
@@ -53,59 +65,16 @@ public class GitProcessorTest {
     @Test
     public void repositoryShouldAddFileInRepo() {
         //given
-        boolean success = processor.openRepository(dirWithRepo);
-        File file = new File("inner/2.txt");
-        File file1 = new File("1.txt");
+        processor.openRepository(dirWithRepo);
+        String filePath = "inner/2.txt";
 
         //when
-        processor.addFile(file);
-        processor.addFile(file1);
+        processor.addFile(new File(filePath));
 
         //then
-        assertThat(success, is(true));
-    }
+        Status status = processor.getFileStatus(filePath);
+        Set<String> added = status.getAdded();
 
-   /* @Test
-    public void repositoryShouldFindStatusOfFile() {
-        //given
-        boolean success = processor.openRepository(dirWithRepo);
-        File file = new File("1.txt");
-        File file1 = new File("inner/2.txt");
-        File file2 = new File("3.txt");
-
-//        processor.addFile(file);
-//        processor.addFile(file1);
-
-        //when
-        Status fileStatus = processor.getFileStatus(file);
-        Status fileStatus1 = processor.getFileStatus(file1);
-        Status fileStatus2 = processor.getFileStatus(file2);
-
-        //then
-        Set<String> untrackedFolders = fileStatus.getUntrackedFolders();
-        Set<String> untrackedFolders1 = fileStatus1.getUntrackedFolders();
-        Set<String> untrackedFolders2 = fileStatus2.getUntrackedFolders();
-        assertThat(success, is(true));
-    }*/
-
-
-    @Test
-    public void fileShould() {
-        //given
-        boolean success = processor.openRepository(dirWithRepo);
-        String pathCommitedFile = "1.txt";
-//        String pathCommitedFile = "E:\\Projects\\jet\\advancedEditor\\IntegrationTest\\src\\test\\resources\\1.txt";
-//        processor.commitAllChanges("new");
-        Status statusBefore = processor.getFileStatus(pathCommitedFile);
-
-        //when
-        processor.revertFile(new File(pathCommitedFile));
-
-        //then
-
-        Status statusAfter = processor.getFileStatus(pathCommitedFile);
-        log.error("");
-
-
+        assertThat(added, contains(filePath));
     }
 }

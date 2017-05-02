@@ -1,7 +1,6 @@
 package com.shamardin.advancededitor.core.fileloading;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,15 +11,12 @@ import java.io.IOException;
 import java.util.List;
 
 import static java.lang.Integer.MAX_VALUE;
-import static lombok.AccessLevel.PACKAGE;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
 
 @Slf4j
 @Component
 class PersistenceFileProcessor implements FileProcessor {
 
-    @VisibleForTesting
-    @Setter(PACKAGE)
     @Autowired
     private TrackedFileContainer trackedFileContainer;
 
@@ -29,7 +25,11 @@ class PersistenceFileProcessor implements FileProcessor {
         return trackedFileContainer.computeIfAbsent(file, this::readFileFromDisk);
     }
 
-    private String readFileFromDisk(File file) {
+    @VisibleForTesting
+    String readFileFromDisk(File file) {
+        if(file == null) {
+            return "Can not open the file! For details look at log file";
+        }
         final long dataLength = file.length();
         int bufLength = dataLength > MAX_VALUE ? MAX_VALUE : (int) dataLength;
         byte[] buffer = new byte[bufLength];
@@ -47,11 +47,6 @@ class PersistenceFileProcessor implements FileProcessor {
             return "Can not open the file! For details look at log file";
         }
         return stringBuilder.toString();
-    }
-
-    @Override
-    public boolean isFileTracked(File file) {
-        return trackedFileContainer.containsFile(file);
     }
 
     @Override

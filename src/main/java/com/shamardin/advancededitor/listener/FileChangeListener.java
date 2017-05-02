@@ -1,8 +1,9 @@
 package com.shamardin.advancededitor.listener;
 
-import com.shamardin.advancededitor.PathUtil;
 import com.shamardin.advancededitor.controller.VcsController;
+import com.shamardin.advancededitor.core.PathUtil;
 import com.shamardin.advancededitor.core.fileloading.FileProcessor;
+import com.shamardin.advancededitor.core.git.FileStatus;
 import com.shamardin.advancededitor.core.git.FileStatusContainer;
 import com.shamardin.advancededitor.view.FileContentArea;
 import com.shamardin.advancededitor.view.FileTreePanel;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.shamardin.advancededitor.core.git.FileStatus.MODIFIED;
+import static com.shamardin.advancededitor.core.git.FileStatus.UNTRACKED;
 
 @Slf4j
 @Component
@@ -46,9 +48,14 @@ public class FileChangeListener implements KeyListener {
                 String newContent = fileContentArea.getText();
 
                 file = PathUtil.getFileWithRelativePath(fullPath);
+                FileStatus fileStatus = fileStatusContainer.getFileStatus(file);
+
+                if(fileStatus == UNTRACKED) {
+                    return null;
+                }
                 if(!persistContent.equals(newContent)) {
                     //already mark as modify
-                    if(fileStatusContainer.getFileStatus(file) != MODIFIED) {
+                    if(fileStatus != MODIFIED) {
                         fileStatusContainer.setFileAsModified(file);
                         publish();
                     }

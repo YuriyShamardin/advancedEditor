@@ -27,13 +27,13 @@ public class ButtonsPanel extends JPanel {
     private RefreshVcsTreeButtonListener refreshVcsTreeButtonListener;
 
     @Getter
-    private JButton refreshGitTree = new JButton("Refresh");
+    private final JButton refreshGitTree = new JButton("Refresh");
     @Getter
-    private JButton revert = new JButton("Revert");
+    private final JButton revert = new JButton("Revert");
     @Getter
-    private JButton removeFromGit = new JButton("Remove");
+    private final JButton removeFromGit = new JButton("Remove");
     @Getter
-    private JButton addToGit = new JButton("Add to git");
+    private final JButton addToGit = new JButton("Add to git");
 
     @PostConstruct
     public void init() {

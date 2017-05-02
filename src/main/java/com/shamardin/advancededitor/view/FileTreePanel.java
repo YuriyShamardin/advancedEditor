@@ -1,6 +1,5 @@
 package com.shamardin.advancededitor.view;
 
-import com.shamardin.advancededitor.controller.FileTreeController;
 import com.shamardin.advancededitor.listener.FileTreeSelectionListener;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +20,6 @@ import static java.io.File.separator;
 @Slf4j
 @Component
 public class FileTreePanel extends JPanel {
-    @Autowired
-    private FileTreeController fileTreeController;
-
     @Autowired
     private FileTreeSelectionListener fileTreeSelectionListener;
 

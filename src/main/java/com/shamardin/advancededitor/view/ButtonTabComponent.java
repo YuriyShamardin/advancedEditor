@@ -15,6 +15,9 @@ import java.awt.event.MouseListener;
  */
 public class ButtonTabComponent extends JPanel {
 
+    private TabButton tab;
+    private ActionListener tabCloseListener;
+
     public ButtonTabComponent(String title, ActionListener tabCloseListener) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -24,9 +27,15 @@ public class ButtonTabComponent extends JPanel {
         //add more space between the label and the button
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
 
-        add(new TabButton(tabCloseListener));
+        this.tabCloseListener = tabCloseListener;
+        tab = new TabButton(this.tabCloseListener);
+        add(tab);
         //add more space to the top of the component
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+    }
+
+    public void removeTabCloseListener() {
+        tab.removeActionListener(this.tabCloseListener);
     }
 
     private class TabButton extends JButton {

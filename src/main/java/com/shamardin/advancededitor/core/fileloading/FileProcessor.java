@@ -13,8 +13,6 @@ public interface FileProcessor {
      */
     String getFileContent(File file);
 
-    boolean isFileTracked(File file);
-
     void unTrackFile(File file);
 
     List<File> getAllTrackedFiles();

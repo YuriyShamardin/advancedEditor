@@ -8,6 +8,4 @@ public interface FileTreeController {
     void showFileTree(File file);
 
     List<File> getFileList();
-
-
 }

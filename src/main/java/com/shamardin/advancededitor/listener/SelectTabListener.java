@@ -9,7 +9,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.TreePath;
 
-import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
+import static com.shamardin.advancededitor.core.PathUtil.getFileWithRelativePath;
 
 @Component
 public class SelectTabListener implements ChangeListener {

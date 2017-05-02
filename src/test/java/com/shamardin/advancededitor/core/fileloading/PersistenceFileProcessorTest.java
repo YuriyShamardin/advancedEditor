@@ -1,19 +1,24 @@
 package com.shamardin.advancededitor.core.fileloading;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import java.io.File;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @Slf4j
 public class PersistenceFileProcessorTest {
 
     private String fileName = "E:\\Projects\\jet\\advancedEditor\\src\\test\\resources\\testContent.txt";
     private File file = new File(fileName);
+    private PersistenceFileProcessor fileProcessor = new PersistenceFileProcessor();
+    private String exceptedErrorMessage = "Can not open the file! For details look at log file";
 
-    /*@Test
+    @Test
     public void fileShouldBeReadCorrectly() {
         //given:
-        PersistenceFileProcessor fileProcessor = new PersistenceFileProcessor();
         String expectedContent = "123\r\n456\r\n789";
 
         //when:
@@ -21,25 +26,29 @@ public class PersistenceFileProcessorTest {
 
         //then:
         assertThat(loadedData, is(expectedContent));
-    }*/
+    }
 
-
-  /*  @Test
-    @Ignore
-    public void fileShouldBeReadOneTime() {
+    @Test
+    public void fileShouldReturnExceptedErrorMessage() {
         //given:
-        PersistenceFileProcessor fileProcessor = spy(PersistenceFileProcessor.class);
-        FileContainer container = new FileContainer();
-        fileProcessor.setFileContainer(container);
+        String exceptedErrorMessage = "Can not open the file! For details look at log file";
 
         //when:
-        for (int i = 0; i < 10; i++) {
-            fileProcessor.trackFile(file);
-        }
+        String loadedData = fileProcessor.readFileFromDisk(new File(""));
 
         //then:
-        verify(fileProcessor, times(1)).readFileFromDisk(file);
-    }*/
+        assertThat(loadedData, is(exceptedErrorMessage));
+    }
 
+    @Test
+    public void fileShouldReturnExceptedErrorMessageForNullParam() {
+        //given:
+        File f = null;
 
+        //when:
+        String loadedData = fileProcessor.readFileFromDisk(f);
+
+        //then:
+        assertThat(loadedData, is(exceptedErrorMessage));
+    }
 }

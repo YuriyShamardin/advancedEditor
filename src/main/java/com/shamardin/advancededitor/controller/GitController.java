@@ -4,7 +4,6 @@ import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.core.git.FileStatusContainer;
 import com.shamardin.advancededitor.core.git.VcsProcessor;
 import com.shamardin.advancededitor.view.CreateRepositoryDialog;
-import com.shamardin.advancededitor.view.FileTreePanel;
 import com.shamardin.advancededitor.view.GitFilesListPanel;
 import com.shamardin.advancededitor.view.UntrackFilePanel;
 import lombok.extern.slf4j.Slf4j;
@@ -16,29 +15,26 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
-import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
-import static com.shamardin.advancededitor.PathUtil.getRoot;
+import static com.shamardin.advancededitor.core.PathUtil.getFileWithRelativePath;
+import static com.shamardin.advancededitor.core.PathUtil.getRoot;
 
 @Slf4j
 @Component
 public class GitController implements VcsController {
     @Autowired
-    private VcsProcessor vcsProcessor;
-
-    @Autowired
     private FileTreeController fileTreeController;
-
-    @Autowired
-    private GitFilesListPanel gitFilesListPanel;
 
     @Autowired
     private FileStatusContainer fileStatusContainer;
 
     @Autowired
-    private FileTreePanel fileTreePanel;
+    private VcsProcessor vcsProcessor;
 
     @Autowired
     private FileProcessor fileProcessor;
+
+    @Autowired
+    private GitFilesListPanel gitFilesListPanel;
 
     @Autowired
     private UntrackFilePanel untrackFilePanel;

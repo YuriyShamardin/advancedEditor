@@ -1,7 +1,7 @@
 package com.shamardin.advancededitor.core.git;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.shamardin.advancededitor.PathUtil;
+import com.shamardin.advancededitor.core.PathUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.shamardin.advancededitor.PathUtil.getGitFriendlyPath;
+import static com.shamardin.advancededitor.core.PathUtil.getGitFriendlyPath;
 import static com.shamardin.advancededitor.core.git.FileStatus.*;
 import static org.apache.commons.lang3.ArrayUtils.INDEX_NOT_FOUND;
 import static org.apache.commons.lang3.ArrayUtils.indexOf;
@@ -133,7 +133,7 @@ public class GitProcessor implements VcsProcessor {
 
     @Override
     public synchronized FileStatus computeFileStatus(File file) {
-        String rightPath = file.getPath().replace("\\", "/");
+        String rightPath = getGitFriendlyPath(file.getPath());
         Status fileStatus = getFileStatus(rightPath);
         if(fileStatus == null) {
             return UNKNOWN;
@@ -159,7 +159,8 @@ public class GitProcessor implements VcsProcessor {
     @VisibleForTesting
     synchronized Status getFileStatus(String filePath) {
         try {
-            return git.status().addPath(filePath).call();
+            String rightPath = getGitFriendlyPath(filePath);
+            return git.status().addPath(rightPath).call();
         } catch (GitAPIException e) {
             log.error(getMessage(e));
         }

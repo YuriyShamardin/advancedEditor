@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import static com.shamardin.advancededitor.PathUtil.getFileWithRelativePath;
+import static com.shamardin.advancededitor.core.PathUtil.getFileWithRelativePath;
 import static org.apache.commons.lang3.ArrayUtils.nullToEmpty;
 
 @Slf4j

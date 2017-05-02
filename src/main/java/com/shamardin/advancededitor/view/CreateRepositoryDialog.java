@@ -5,7 +5,7 @@ import javax.swing.*;
 public class CreateRepositoryDialog extends JDialog {
     public static boolean isNeedToCreateRepository() {
         int answer = JOptionPane.showOptionDialog(null,
-                "There is not git, \nwould you like to create it?",
+                "There is not git, \nwould you like to create?",
                 "Create git?",
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
