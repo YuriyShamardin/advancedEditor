@@ -21,7 +21,7 @@ public class PathUtil {
      * Return file with relative path. Remove root path from full path.
      * Note! Before using set root path.
      */
-    public static File getFileWithRelativePath(String fullPath) {
+    public synchronized static File getFileWithRelativePath(String fullPath) {
         return new File(fullPath.replace(root, ""));
     }
 
@@ -29,14 +29,14 @@ public class PathUtil {
      * Return file with relative path. Remove root path from full path.
      * Note! Before using set root path.
      */
-    public static File getFileWithRelativePath(File fileWithFullPath) {
+    public synchronized static File getFileWithRelativePath(File fileWithFullPath) {
         return new File(fileWithFullPath.getPath().replace(root, ""));
     }
 
     /**
      * replace all '\' symbols to '/'
      */
-    public static String getGitFriendlyPath(String path) {
+    public synchronized static String getGitFriendlyPath(String path) {
         return path.replace("\\", "/");
     }
 }

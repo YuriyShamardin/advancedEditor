@@ -52,7 +52,7 @@ public class GitFilesListPanel extends JPanel {
     }
 
     public void clearGitFileList() {
-        listModel.removeAllElements();
+        listModel.clear();
     }
 
     private class CellRender extends DefaultListCellRenderer {

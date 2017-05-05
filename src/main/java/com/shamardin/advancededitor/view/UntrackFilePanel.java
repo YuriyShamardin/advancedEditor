@@ -36,7 +36,7 @@ public class UntrackFilePanel extends JPanel {
     }
 
     public void clearUntrackFileList() {
-        listModel.removeAllElements();
+        listModel.clear();
     }
 
     private class CellRender extends DefaultListCellRenderer {
