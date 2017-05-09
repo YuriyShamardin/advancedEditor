@@ -1,14 +1,18 @@
 package com.shamardin.advancededitor.core.fileloading;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.shamardin.advancededitor.controller.VcsController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
@@ -19,6 +23,10 @@ class PersistenceFileProcessor implements FileProcessor {
 
     @Autowired
     private TrackedFileContainer trackedFileContainer;
+
+    // TODO: 10-May-17 refactor it, probably using event-driven development(?)
+    @Autowired
+    private VcsController vcsController;
 
     @Override
     public synchronized String getFileContent(File file) {
@@ -61,6 +69,28 @@ class PersistenceFileProcessor implements FileProcessor {
 
     @Override
     public void saveFile(File file, String content) {
-        trackedFileContainer.addFile(file, content);
+        String oldValue = trackedFileContainer.addFile(file, content);
+        if(oldValue != null && !oldValue.equals(content)) {
+            saveFileOnDisk(file, content);
+        }
+    }
+
+    private void saveFileOnDisk(File file, String content) {
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                log.info("starting to save {} ...", file);
+                try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+                    bufferedWriter.write(content);
+                }
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                log.info("file {} successfully saved on disk", file);
+                vcsController.updateGitPanel();
+            }
+        }.execute();
     }
 }

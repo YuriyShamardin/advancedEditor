@@ -1,9 +1,6 @@
 package com.shamardin.advancededitor.view;
 
-import com.shamardin.advancededitor.listener.AddFileToVcsButtonListener;
-import com.shamardin.advancededitor.listener.RefreshVcsTreeButtonListener;
-import com.shamardin.advancededitor.listener.RemoveFromVcsButtonListener;
-import com.shamardin.advancededitor.listener.RevertFileInVcsButtonListener;
+import com.shamardin.advancededitor.listener.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,8 @@ public class ButtonsPanel extends JPanel {
     private RevertFileInVcsButtonListener revertFileInVcsButtonListener;
     @Autowired
     private RefreshVcsTreeButtonListener refreshVcsTreeButtonListener;
+    @Autowired
+    private SaveFileOnDiskListener saveFileOnDiskListener;
 
     @Getter
     private final JButton refreshGitTree = new JButton("Refresh");
@@ -34,6 +33,8 @@ public class ButtonsPanel extends JPanel {
     private final JButton removeFromGit = new JButton("Remove");
     @Getter
     private final JButton addToGit = new JButton("Add to git");
+    @Getter
+    private final JButton saveFile = new JButton("Save changes on disk");
 
     @PostConstruct
     public void init() {
@@ -55,5 +56,9 @@ public class ButtonsPanel extends JPanel {
         refreshGitTree.addActionListener(refreshVcsTreeButtonListener);
         refreshGitTree.setEnabled(true);
         add(refreshGitTree);
+
+        saveFile.addActionListener(saveFileOnDiskListener);
+        saveFile.setEnabled(true);
+        add(saveFile);
     }
 }

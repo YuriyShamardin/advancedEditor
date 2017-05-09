@@ -25,14 +25,6 @@ class TrackedFileContainer {
      */
     private Map<File, String> filesContent = new ConcurrentHashMap<>();
 
-    @PostConstruct
-    public void init() {
-        // TODO: 03-May-17 prototype to automatic save file
-        FileSynchronizer fileSynchronizer = new FileSynchronizer();
-        Timer timer = new Timer(10_000, fileSynchronizer);
-//        timer.start();
-    }
-
     String get(File file) {
         return filesContent.get(file);
     }
@@ -49,26 +41,8 @@ class TrackedFileContainer {
         return filesContent.computeIfAbsent(file, mappingFnction);
     }
 
-    private class FileSynchronizer implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    for (Map.Entry<File, String> fileEntry : filesContent.entrySet()) {
-                        log.info("write to {}", fileEntry.getKey());
-                        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileEntry.getKey()))) {
-                            bufferedWriter.write(fileEntry.getValue());
-                        }
-                    }
-                    return null;
-                }
-            }.execute();
-        }
-    }
-
-    void addFile(File file, String content) {
-        filesContent.put(file, content);
+    String addFile(File file, String content) {
+        return filesContent.put(file, content);
     }
 
     void remove(File file) {
