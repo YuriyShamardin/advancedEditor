@@ -21,6 +21,8 @@ gen### Java template
 
 # Package Files #
 *.jar
+!lib/synthetica.jar
+!lib/syntheticaAluOxide.jar
 *.war
 *.ear
 *.zip
