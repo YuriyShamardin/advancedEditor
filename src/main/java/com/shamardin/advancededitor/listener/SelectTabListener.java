@@ -2,17 +2,21 @@ package com.shamardin.advancededitor.listener;
 
 import com.shamardin.advancededitor.view.FileContentTab;
 import com.shamardin.advancededitor.view.FileTreePanel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Position;
 import javax.swing.tree.TreePath;
 
 import static com.shamardin.advancededitor.core.PathUtil.getFileWithRelativePath;
 import static java.io.File.separator;
 import static java.util.regex.Matcher.quoteReplacement;
 
+@Slf4j
 @Component
 public class SelectTabListener implements ChangeListener {
     @Autowired
@@ -29,9 +33,15 @@ public class SelectTabListener implements ChangeListener {
         //if removed last tab
         if(selectedComponent != -1) {
             String fileNameFromTitle = getFileWithRelativePath(fileContentTab.getTitleAt(selectedComponent)).getPath();
-            String[] split = fileNameFromTitle.split(quoteReplacement(separator));
-            TreePath nextMatch = fileTreePanel.getFileTree().getNextMatch(split[split.length - 1], 0, null);
-            fileTreePanel.getFileTree().setSelectionPath(nextMatch);
+            String[] piecesOfPath = fileNameFromTitle.split(quoteReplacement(separator));
+            JTree fileTree = fileTreePanel.getFileTree();
+
+            //resolve two file with same names
+            TreePath nextMatch = fileTree.getNextMatch(piecesOfPath[0], 0, null);
+            for(String pieceOfPath : piecesOfPath) {
+                nextMatch = fileTree.getNextMatch(pieceOfPath, fileTree.getRowForPath(nextMatch), Position.Bias.Forward);
+            }
+            fileTree.setSelectionRow(fileTree.getRowForPath(nextMatch));
         }
     }
 }
