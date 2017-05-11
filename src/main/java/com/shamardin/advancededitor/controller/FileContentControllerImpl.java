@@ -105,10 +105,10 @@ public class FileContentControllerImpl implements FileContentController, ActionL
         @SneakyThrows
         protected String doInBackground() {
             fileContentArea.setText("");
-            try (BufferedReader stream = new BufferedReader(
+            try(BufferedReader stream = new BufferedReader(
                     new InputStreamReader(new ByteArrayInputStream(content.getBytes())))) {
                 String line;
-                while ((line = stream.readLine()) != null) {
+                while((line = stream.readLine()) != null) {
                     if(isCancelled()) {
                         return "";
                     }
@@ -121,7 +121,7 @@ public class FileContentControllerImpl implements FileContentController, ActionL
         @Override
         protected void process(List<String> chunks) {
             StringBuilder buffer = new StringBuilder();
-            for (String line : chunks) {
+            for(String line : chunks) {
                 buffer.append(line)
                         .append("\n");
                 if(isCancelled()) {

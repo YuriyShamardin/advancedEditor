@@ -67,16 +67,16 @@ public class GitController implements VcsController {
                 List<File> fileList = fileProcessor.getAllTrackedFiles();
                 gitFilesListPanel.clearGitFileList();
                 untrackFilePanel.clearUntrackFileList();
-                for (File file : fileList) {
+                for(File file : fileList) {
                     fileStatusContainer.updateFileStatus(getFileWithRelativePath(file));
                     publish(Pair.of(SHOW_AS_TRACKED, file));
                 }
                 List<String> removedFiles = vcsProcessor.getAllRemovedFiles();
-                for (String string : removedFiles) {
+                for(String string : removedFiles) {
                     publish(Pair.of(SHOW_AS_TRACKED, new File(string)));
                 }
                 List<String> allUntrackedFiles = vcsProcessor.getAllUntrackedFiles();
-                for (String untrackedFile : allUntrackedFiles) {
+                for(String untrackedFile : allUntrackedFiles) {
                     publish(Pair.of(SHOW_AS_UNTRACKED, new File(untrackedFile)));
                 }
                 return null;
@@ -84,7 +84,7 @@ public class GitController implements VcsController {
 
             @Override
             protected void process(List<Pair<Integer, File>> files) {
-                for (Pair<Integer, File> pair : files) {
+                for(Pair<Integer, File> pair : files) {
                     if(pair.getKey() == SHOW_AS_TRACKED) {
                         gitFilesListPanel.addFileInList(getFileWithRelativePath(pair.getRight()));
                     } else {
@@ -109,17 +109,17 @@ public class GitController implements VcsController {
                 List<File> fileList = fileProcessor.getAllTrackedFiles();
                 gitFilesListPanel.clearGitFileList();
                 untrackFilePanel.clearUntrackFileList();
-                for (File file : fileList) {
+                for(File file : fileList) {
                     fileStatusContainer.getFileStatus(getFileWithRelativePath(file));
                     publish(Pair.of(SHOW_AS_TRACKED, file));
                 }
 
                 List<String> removedFiles = vcsProcessor.getAllRemovedFiles();
-                for (String string : removedFiles) {
+                for(String string : removedFiles) {
                     publish(Pair.of(SHOW_AS_TRACKED, new File(string)));
                 }
                 List<String> allUntrackedFiles = vcsProcessor.getAllUntrackedFiles();
-                for (String untrackedFile : allUntrackedFiles) {
+                for(String untrackedFile : allUntrackedFiles) {
                     publish(Pair.of(SHOW_AS_UNTRACKED, new File(untrackedFile)));
                 }
                 return null;
@@ -127,7 +127,7 @@ public class GitController implements VcsController {
 
             @Override
             protected void process(List<Pair<Integer, File>> files) {
-                for (Pair<Integer, File> pair : files) {
+                for(Pair<Integer, File> pair : files) {
                     if(pair.getKey() == SHOW_AS_TRACKED) {
                         gitFilesListPanel.addFileInList(getFileWithRelativePath(pair.getRight()));
                     } else {

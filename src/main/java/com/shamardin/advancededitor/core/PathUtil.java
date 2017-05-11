@@ -2,6 +2,8 @@ package com.shamardin.advancededitor.core;
 
 import java.io.File;
 
+import static java.io.File.separator;
+
 public class PathUtil {
 
     private static volatile String root = "";
@@ -10,7 +12,7 @@ public class PathUtil {
     }
 
     public synchronized static void setRoot(String root) {
-        PathUtil.root = root + "\\";
+        PathUtil.root = root + separator;
     }
 
     public synchronized static String getRoot() {

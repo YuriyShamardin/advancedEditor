@@ -32,7 +32,7 @@ public class SelectVcsElementListener implements ListSelectionListener {
                 return;
             }
             FileStatus fileStatus = fileStatusContainer.getFileStatus(selectedFile);
-            switch (fileStatus) {
+            switch(fileStatus) {
                 case UNTRACKED:
                     buttonsPanel.getAddToGit().setEnabled(true);
                     buttonsPanel.getRemoveFromGit().setEnabled(false);

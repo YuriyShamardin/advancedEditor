@@ -10,6 +10,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.tree.TreePath;
 
 import static com.shamardin.advancededitor.core.PathUtil.getFileWithRelativePath;
+import static java.io.File.separator;
+import static java.util.regex.Matcher.quoteReplacement;
 
 @Component
 public class SelectTabListener implements ChangeListener {
@@ -27,7 +29,7 @@ public class SelectTabListener implements ChangeListener {
         //if removed last tab
         if(selectedComponent != -1) {
             String fileNameFromTitle = getFileWithRelativePath(fileContentTab.getTitleAt(selectedComponent)).getPath();
-            String[] split = fileNameFromTitle.split("\\\\");
+            String[] split = fileNameFromTitle.split(quoteReplacement(separator));
             TreePath nextMatch = fileTreePanel.getFileTree().getNextMatch(split[split.length - 1], 0, null);
             fileTreePanel.getFileTree().setSelectionPath(nextMatch);
         }

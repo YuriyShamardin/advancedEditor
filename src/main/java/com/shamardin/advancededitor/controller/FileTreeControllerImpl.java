@@ -48,7 +48,7 @@ public class FileTreeControllerImpl implements FileTreeController {
 
         Vector<String> filePath = new Vector<>();
         // Make two passes, one for Dirs and one for Files. This is #1.
-        for (String thisObject : fileNames) {
+        for(String thisObject : fileNames) {
             String fullPath = curPath + File.separator + thisObject;
 
             File f = new File(fullPath);
@@ -62,7 +62,7 @@ public class FileTreeControllerImpl implements FileTreeController {
             }
         }
         // Pass two: for files.
-        for (String aFilePath : filePath) {
+        for(String aFilePath : filePath) {
             curDir.add(new DefaultMutableTreeNode(aFilePath));
         }
         return curDir;

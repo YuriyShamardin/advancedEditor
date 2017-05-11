@@ -14,12 +14,12 @@ public class Main {
 
         try {
             UIManager.setLookAndFeel(new SyntheticaAluOxideLookAndFeel());
-        } catch (UnsupportedLookAndFeelException | ParseException e) {
+        } catch(UnsupportedLookAndFeelException | ParseException e) {
             log.info("Look and feel error \n {} \n Try to use default.", e);
 
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException |
+            } catch(ClassNotFoundException |
                     InstantiationException |
                     IllegalAccessException |
                     UnsupportedLookAndFeelException e1) {

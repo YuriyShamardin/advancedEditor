@@ -1,6 +1,5 @@
 package com.shamardin.advancededitor.listener;
 
-import com.shamardin.advancededitor.controller.VcsController;
 import com.shamardin.advancededitor.core.fileloading.FileProcessor;
 import com.shamardin.advancededitor.view.FileContentArea;
 import com.shamardin.advancededitor.view.FileContentTab;

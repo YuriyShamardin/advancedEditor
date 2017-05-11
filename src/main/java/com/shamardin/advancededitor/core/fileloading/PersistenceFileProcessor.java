@@ -6,13 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getMessage;
@@ -44,13 +40,13 @@ class PersistenceFileProcessor implements FileProcessor {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        try (FileInputStream fis = new FileInputStream(file)) {
+        try(FileInputStream fis = new FileInputStream(file)) {
             int readData;
-            while ((readData = fis.read(buffer)) > 0) {
+            while((readData = fis.read(buffer)) > 0) {
                 log.info("read {} bytes from file {}. Full size is {}", readData, file.getName(), dataLength);
                 stringBuilder.append(new String(buffer));
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             log.error(getMessage(e));
             return "Can not open the file! For details look at log file";
         }
@@ -80,7 +76,7 @@ class PersistenceFileProcessor implements FileProcessor {
             @Override
             protected Void doInBackground() throws Exception {
                 log.info("starting to save {} ...", file);
-                try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+                try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
                     bufferedWriter.write(content);
                 }
                 return null;

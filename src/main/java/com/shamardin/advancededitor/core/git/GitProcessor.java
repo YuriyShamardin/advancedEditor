@@ -37,14 +37,14 @@ public class GitProcessor implements VcsProcessor {
             return false;
         }
 
-        try (Repository repository = new FileRepositoryBuilder()
+        try(Repository repository = new FileRepositoryBuilder()
                 .setGitDir(files[gitDirectory])
                 .build()) {
             log.info("found repository with status {}", repository.getRepositoryState());
             git = Git.wrap(repository);
             PathUtil.setRoot(file.getPath());
             return true;
-        } catch (IOException e) {
+        } catch(IOException e) {
             log.error(getMessage(e));
         }
         return false;
@@ -52,11 +52,11 @@ public class GitProcessor implements VcsProcessor {
 
     @Override
     public synchronized boolean createRepository(File file) {
-        try (Git openGit = Git.init().setDirectory(file).call()) {
+        try(Git openGit = Git.init().setDirectory(file).call()) {
             this.git = openGit;
             PathUtil.setRoot(file.getPath());
             return true;
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error("Unknown error during creation repository {}", e);
         }
         return false;
@@ -74,7 +74,7 @@ public class GitProcessor implements VcsProcessor {
             } else {
                 log.info("Can not add file {} to git", file);
             }
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
     }
@@ -91,7 +91,7 @@ public class GitProcessor implements VcsProcessor {
             } else {
                 log.info("Can not remove file {} from git", file);
             }
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
     }
@@ -101,7 +101,7 @@ public class GitProcessor implements VcsProcessor {
         try {
             String rightPath = getGitFriendlyPath(file.getPath());
             git.checkout().setStartPoint("HEAD").addPath(rightPath).call();
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
     }
@@ -112,7 +112,7 @@ public class GitProcessor implements VcsProcessor {
         try {
             status = git.status().call();
             return newArrayList(status.getRemoved());
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
         return new ArrayList<>();
@@ -124,7 +124,7 @@ public class GitProcessor implements VcsProcessor {
         try {
             status = git.status().call();
             return newArrayList(status.getUntracked());
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
         return new ArrayList<>();
@@ -161,7 +161,7 @@ public class GitProcessor implements VcsProcessor {
         try {
             String rightPath = getGitFriendlyPath(filePath);
             return git.status().addPath(rightPath).call();
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
         return null;
@@ -171,7 +171,7 @@ public class GitProcessor implements VcsProcessor {
     private synchronized void commitAllChanges(String message) {
         try {
             git.commit().setMessage(message).call();
-        } catch (GitAPIException e) {
+        } catch(GitAPIException e) {
             log.error(getMessage(e));
         }
     }
